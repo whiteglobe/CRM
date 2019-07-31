@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CRM</string>
+    <string name="internet_connection">Please Connect to Internet and Try Again.</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+</resources>
