@@ -17,7 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class Dashboard extends AppCompatActivity {
 
-    FloatingActionButton userAccount,logout;
+    FloatingActionButton userAccount,logout,leads;
     SharedPreferences sessionDashboard;
     boolean doubleBackToExitPressedOnce = false;
 
@@ -38,6 +38,9 @@ public class Dashboard extends AppCompatActivity {
 
         //For Logging Out User
         logout();
+
+        //To go in Leads Activity
+        leads();
     }
 
     private void userAccount()
@@ -67,6 +70,19 @@ public class Dashboard extends AppCompatActivity {
                 editor.commit();
                 startActivity(iLogout);
                 finish();
+            }
+        });
+    }
+
+    private void leads()
+    {
+        leads = findViewById(R.id.leads);
+
+        leads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iLeads = new Intent(Dashboard.this,Leads.class);
+                startActivity(iLeads);
             }
         });
     }
