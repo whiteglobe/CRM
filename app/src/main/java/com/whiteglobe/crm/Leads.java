@@ -90,6 +90,7 @@ public class Leads extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(Leads.this);
 
         String url = WebName.weburl+"getuserleads.php?username="+u_name;
+        //Log.d("URL",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
@@ -111,12 +112,12 @@ public class Leads extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++)
                         {
                             jsonObject = jsonArray.getJSONObject(i);
-                            allLeads.add(new LeadGS(jsonObject.getInt("RL_Id"),jsonObject.getString("RL_Title"),jsonObject.getString("name"),jsonObject.getString("RL_Phone")));
-                            Log.d("Phone", jsonObject.getString("RL_Phone"));
+                            allLeads.add(new LeadGS(jsonObject.getInt("RL_Id"),jsonObject.getString("RL_Title"),jsonObject.getString("RL_Company_Name"),jsonObject.getString("RL_Phone")));
+                            //Log.d("Phone", jsonObject.getString("RL_Phone"));
                         }
 
 
-                        Log.d("Length",String.valueOf(allLeads.size()));
+                        //Log.d("Length",String.valueOf(allLeads.size()));
 
                         recyclerViewadapter = new LeadsAdapter(allLeads, getApplicationContext());
                         recyclerView.setAdapter(recyclerViewadapter);
