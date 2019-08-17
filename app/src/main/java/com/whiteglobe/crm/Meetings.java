@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,10 +17,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,45 +27,40 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Leads extends AppCompatActivity {
+public class Meetings extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     RecyclerView.Adapter recyclerViewadapter;
 
-    View ChildView ;
-
-    int GetItemPosition ;
-
-    List<LeadGS> allLeads;
-
     SharedPreferences sessionUserAccount;
     private ProgressDialog pDialog;
     private static String TAG = MainActivity.class.getSimpleName();
 
+    List<MeetingGS> allmeetings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_leads);
-        getSupportActionBar().hide();
+        setContentView(R.layout.activity_meetings);
 
-        recyclerView = findViewById(R.id.recyclerViewLeads);
+        recyclerView = findViewById(R.id.recyclerViewMeetings);
         recyclerView.setHasFixedSize(true);
         recyclerViewlayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(recyclerViewlayoutManager);
-        allLeads = new ArrayList<>();
+        allmeetings = new ArrayList<>();
 
         sessionUserAccount = getSharedPreferences("user_details",MODE_PRIVATE);
-        getAllLeadsDataOfUser(sessionUserAccount.getString("uname",null));
+        getAllMeetingsDataOfUser(sessionUserAccount.getString("uname",null));
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                LeadGS leads = allLeads.get(position);
-                Intent iLeadDetails = new Intent(Leads.this,LeadDetails.class);
-                iLeadDetails.putExtra("lead_id", String.valueOf(leads.getLeadID()));
+                MeetingGS meetings = allmeetings.get(position);
+                Intent iLeadDetails = new Intent(Meetings.this,MeetingDetails.class);
+                iLeadDetails.putExtra("meeting_id", String.valueOf(meetings.getMeetingId()));
                 startActivity(iLeadDetails);
-                //Toast.makeText(getApplicationContext(), leads.getLeadID() + " is selected!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), meetings.getMeetingId() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -79,7 +70,7 @@ public class Leads extends AppCompatActivity {
         }));
     }
 
-    private void getAllLeadsDataOfUser(String u_name) {
+    private void getAllMeetingsDataOfUser(String u_name) {
 
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Loading...");
@@ -87,9 +78,9 @@ public class Leads extends AppCompatActivity {
 
         showpDialog();
 
-        RequestQueue requestQueue = Volley.newRequestQueue(Leads.this);
+        RequestQueue requestQueue = Volley.newRequestQueue(Meetings.this);
 
-        String url = WebName.weburl+"getuserleads.php?username="+u_name;
+        String url = WebName.weburl+"getusermeetings.php?username="+u_name;
         //Log.d("URL",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -104,7 +95,7 @@ public class Leads extends AppCompatActivity {
                     // response will be a json object
                     if(response.getInt("success") == 1)
                     {
-                        JSONArray jsonArray = response.getJSONArray("leads");
+                        JSONArray jsonArray = response.getJSONArray("meetings");
                         //Log.d("array",jsonArray.toString());
 
                         JSONObject jsonObject;
@@ -112,14 +103,13 @@ public class Leads extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++)
                         {
                             jsonObject = jsonArray.getJSONObject(i);
-                            allLeads.add(new LeadGS(jsonObject.getInt("RL_Id"),jsonObject.getString("RL_Title"),jsonObject.getString("RL_Company_Name"),jsonObject.getString("RL_Phone")));
-                            //Log.d("Phone", jsonObject.getString("RL_Phone"));
+                            allmeetings.add(new MeetingGS(jsonObject.getInt("MeetingId"),jsonObject.getString("MeetingForLead"),jsonObject.getString("MeetingDate"),jsonObject.getString("MeetingTime")));
                         }
 
 
                         //Log.d("Length",String.valueOf(allLeads.size()));
 
-                        recyclerViewadapter = new LeadsAdapter(allLeads, getApplicationContext());
+                        recyclerViewadapter = new MeetingsAdapter(allmeetings, getApplicationContext());
                         recyclerView.setAdapter(recyclerViewadapter);
                     }
 

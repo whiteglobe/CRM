@@ -65,14 +65,14 @@ public class LeadDetails extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(LeadDetails.this);
 
         String url = WebName.weburl+"leaddetails.php?username="+u_name+"&lead_id="+leadid;
-        Log.d("url",url);
+        //Log.d("url",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
+                //Log.d(TAG, response.toString());
 
                 try {
                     // Parsing json object response

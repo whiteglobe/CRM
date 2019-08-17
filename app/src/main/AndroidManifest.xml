@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".LeadDetails"></activity>
+        <activity android:name=".MeetingDetails"></activity>
+        <activity android:name=".Meetings" />
+        <activity android:name=".LeadDetails" />
         <activity android:name=".Leads" />
         <activity android:name=".UpdateUser" />
         <activity android:name=".UserAccount" />
