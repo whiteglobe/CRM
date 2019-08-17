@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "88095388726",
+    "firebase_url": "https://superindiabuildpro-8b6bd.firebaseio.com",
+    "project_id": "superindiabuildpro-8b6bd",
+    "storage_bucket": "superindiabuildpro-8b6bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88095388726:android:1981e2133ebcc1a0",
+        "android_client_info": {
+          "package_name": "com.whiteglobe.crm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "88095388726-qliok49f9q9q9m7053ega8kgiji3ifrf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApBFiYowx9guaAqFAbLWIvfVo3rahbbfM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "88095388726-qliok49f9q9q9m7053ega8kgiji3ifrf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
