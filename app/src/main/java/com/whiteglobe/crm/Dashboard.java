@@ -1,6 +1,7 @@
 package com.whiteglobe.crm;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,6 +29,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,6 +45,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -44,6 +55,7 @@ public class Dashboard extends AppCompatActivity implements
     SharedPreferences sessionDashboard;
     boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "Dashboard";
+    private ProgressDialog pDialog;
 
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -122,7 +134,11 @@ public class Dashboard extends AppCompatActivity implements
         if (!checkPermissions()) {
             requestPermissions();
         } else {
-            mService.requestLocationUpdates();
+            try {
+                mService.requestLocationUpdates();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         // Bind to the service. If the service is in foreground mode, this signals to the service
@@ -247,9 +263,9 @@ public class Dashboard extends AppCompatActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
+            senLocationDataToServer(sessionDashboard.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
             if (location != null) {
-                Toast.makeText(Dashboard.this, Utils.getLocationText(location),
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Dashboard.this, Utils.getLocationText(location),Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -303,6 +319,7 @@ public class Dashboard extends AppCompatActivity implements
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mService.removeLocationUpdates();
                 Intent iLogout = new Intent(Dashboard.this, MainActivity.class);
                 SharedPreferences.Editor editor = sessionDashboard.edit();
                 editor.clear();
@@ -364,5 +381,63 @@ public class Dashboard extends AppCompatActivity implements
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+
+    public void senLocationDataToServer(String u_name,String lat,String lng){
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        showpDialog();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(Dashboard.this);
+
+        String url = WebName.weburl+"userlocations.php?username="+u_name+"&latitude="+lat+"&longitude="+lng;
+        Log.d("url",url);
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url , null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                //Log.d(TAG, response.toString());
+
+                try {
+                    // Parsing json object response
+                    // response will be a json object
+                    Log.d("Response",response.getString("success"));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),
+                            "Error: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+                hidepDialog();
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+                hidepDialog();
+            }
+        });
+
+        // Adding request to request queue
+        requestQueue.add(jsonObjReq);
+    }
+
+    private void showpDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hidepDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 }

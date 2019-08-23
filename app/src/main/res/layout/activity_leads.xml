@@ -6,9 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".Leads">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewLeads"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.widget.FrameLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewLeads"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnAddNewLead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:tint="@android:color/white"
+                app:fabSize="normal"
+                app:rippleColor="@android:color/white"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
+
+        </android.widget.FrameLayout>
+
+
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

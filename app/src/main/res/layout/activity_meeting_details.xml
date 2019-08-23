@@ -216,7 +216,8 @@
                             android:layout_height="@dimen/spacing_xmlarge"
                             android:background="@android:color/transparent"
                             android:tint="@color/grey_40"
-                            app:srcCompat="@drawable/ic_description" />
+                            app:srcCompat="@drawable/ic_description"
+                            android:layout_gravity="top"/>
 
                         <View
                             android:layout_width="@dimen/spacing_mlarge"
@@ -234,13 +235,16 @@
                                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                                 android:textColor="@color/overlay_dark_90" />
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/txtMeetingLeadDiscussion"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Meeting Discussion"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                                android:textColor="@color/grey_80" />
+                                android:background="@android:color/transparent"
+                                android:gravity="top"
+                                android:hint="Meeting Discussion"
+                                android:inputType="textMultiLine"
+                                android:maxLines="12"
+                                android:minLines="7" />
 
                         </LinearLayout>
 
@@ -250,6 +254,14 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnUpdateMeetDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Update Meeting Details"
+                android:theme="@style/Button.Primary" />
 
         </LinearLayout>
 

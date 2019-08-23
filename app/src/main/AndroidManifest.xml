@@ -20,7 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MeetingDetails"></activity>
+        <activity android:name=".AddNewLead"></activity>
+        <activity android:name=".MeetingDetails" />
         <activity android:name=".Meetings" />
         <activity android:name=".LeadDetails" />
         <activity android:name=".Leads" />

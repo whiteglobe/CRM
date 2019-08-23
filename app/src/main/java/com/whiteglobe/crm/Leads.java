@@ -22,6 +22,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -36,16 +37,13 @@ public class Leads extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     RecyclerView.Adapter recyclerViewadapter;
-
-    View ChildView ;
-
-    int GetItemPosition ;
-
     List<LeadGS> allLeads;
 
     SharedPreferences sessionUserAccount;
     private ProgressDialog pDialog;
-    private static String TAG = MainActivity.class.getSimpleName();
+    private static String TAG = Leads.class.getSimpleName();
+
+    FloatingActionButton btnAddNewLead;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +75,15 @@ public class Leads extends AppCompatActivity {
 
             }
         }));
+
+        btnAddNewLead = findViewById(R.id.btnAddNewLead);
+        btnAddNewLead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iAddNewLead = new Intent(Leads.this,AddNewLead.class);
+                startActivity(iAddNewLead);
+            }
+        });
     }
 
     private void getAllLeadsDataOfUser(String u_name) {
