@@ -2,7 +2,6 @@ package com.whiteglobe.crm;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.AppCompatButton;
 
 
 import android.app.Dialog;
@@ -12,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,13 +20,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,9 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextInputEditText txtUsername,txtPassword;
     private ProgressDialog pDialog;
-    private static final String KEY_SUCCESS = "success";
     private String usname,pwd,uname,msg;
-    private int success;
     SharedPreferences sessionData;
     Intent iLogin;
 
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     usname = txtUsername.getText().toString();
                     pwd = txtPassword.getText().toString();
-                    new UserLogin().execute();
+                    userLogin(usname,pwd);
                 }
             }
         });
@@ -153,67 +153,75 @@ public class MainActivity extends AppCompatActivity {
         dialogError.getWindow().setAttributes(lp);
     }
 
-    private class UserLogin extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //Display progress bar
-            pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Logging In. Please wait...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
-        }
+    private void userLogin(final String username,final String password){
 
-        @Override
-        protected String doInBackground(String... params) {
-            HttpJsonParser httpJsonParser = new HttpJsonParser();
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Logging In. Please Wait...");
+        pDialog.show();
 
-            Map<String, String> httpParams = new HashMap<>();
-            //Populating request parameters
-            httpParams.put("username", usname);
-            httpParams.put("password", pwd);
-            String url = WebName.weburl + "login.php";
-            //Log.d("URL",url);
-            JSONObject jsonObject = httpJsonParser.makeHttpRequest(
-                    url, "POST", httpParams);
-            try {
-                success = jsonObject.getInt(KEY_SUCCESS);
-                if(success == 1){
-                    uname = jsonObject.getString("uname");
-                }
-                else if (success == 0){
-                    msg = jsonObject.getString("msg");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+        showpDialog();
 
-        protected void onPostExecute(String result) {
-            pDialog.dismiss();
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    if (success == 1) {
-                        //Display success message
-                        //Toast.makeText(MainActivity.this,"Username: "+uname, Toast.LENGTH_LONG).show();
-                        //Toast.makeText(getApplicationContext(),txtUsername.getText()+" "+txtPassword.getText(),Toast.LENGTH_LONG).show();
-                        SharedPreferences.Editor editor = sessionData.edit();
-                        editor.putString("username",uname);
-                        editor.putString("uname",txtUsername.getText().toString());
-                        editor.commit();
-                        iLogin = new Intent(MainActivity.this, Dashboard.class);
-                        startActivity(iLogin);
-                        finish();
+        String url = WebName.weburl+"login.php";
 
-                    } else if(success == 0){
-                        showCustomDialogError(msg);
-                        //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Toast.makeText(MeetingDetails.this,response,Toast.LENGTH_LONG).show();
+                        //parseData(response);
+                        Log.d("Response From Server", response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if(jsonObject.getInt("success") == 1)
+                            {
+                                uname = jsonObject.getString("uname");
+                                SharedPreferences.Editor editor = sessionData.edit();
+                                editor.putString("username",uname);
+                                editor.putString("uname",txtUsername.getText().toString());
+                                editor.commit();
+                                iLogin = new Intent(MainActivity.this, Dashboard.class);
+                                startActivity(iLogin);
+                                finish();
+                            }
+                            else if(jsonObject.getInt("success") == 0)
+                            {
+                                msg = jsonObject.getString("msg");
+                                showCustomDialogError(msg);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        hidepDialog();
                     }
-                }
-            });
-        }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("username",username);
+                params.put("password",password);
 
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void showpDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hidepDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 }
