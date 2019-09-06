@@ -25,7 +25,7 @@ public class LeadDetails extends AppCompatActivity {
 
     SharedPreferences sessionUserAccount;
     private ProgressDialog pDialog;
-    private static String TAG = MainActivity.class.getSimpleName();
+    private static String TAG = LeadDetails.class.getSimpleName();
 
     TextView txtLeadCompanyName,txtLeadContactPerson,txtLeadPhone,txtLeadTitle,txtLeadMail,txtLeadDepartment,txtLeadWebsite,txtLeadAddress,txtLeadStatus,txtLeadStatusDescr,txtLeadSource,txtLeadSourceDescr,txtLeadOpportunityAmt;
 
