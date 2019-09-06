@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,6 +50,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -56,6 +61,7 @@ public class Dashboard extends AppCompatActivity implements
     boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "Dashboard";
     private ProgressDialog pDialog;
+    TelephonyManager telephonyManager;
 
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -108,9 +114,8 @@ public class Dashboard extends AppCompatActivity implements
             }
         }
 
-        //Firebase Token
-        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
-        firebaseToken();
+        //To send userdata to server
+        deviceId();
 
         //To go in User Account Activity
         userAccount();
@@ -172,6 +177,38 @@ public class Dashboard extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
         super.onStop();
+    }
+
+    private void deviceId() {
+        telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
+            return;
+        }
+    }
+
+    private void firebaseToken(final String imei)
+    {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        String msg = getString(R.string.fcm_token, token);
+                        Log.d(TAG, msg);
+                        sessionDashboard = getSharedPreferences("user_details",MODE_PRIVATE);
+                        sendTokenToServer(imei,token,sessionDashboard.getString("uname",null));
+                        //Toast.makeText(Dashboard.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
@@ -254,6 +291,27 @@ public class Dashboard extends AppCompatActivity implements
                         .show();
             }
         }
+
+        switch (requestCode) {
+            case 101:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
+                        return;
+                    }
+                    String imeiNumber = telephonyManager.getImei();
+                    Toast.makeText(Dashboard.this,imeiNumber,Toast.LENGTH_LONG).show();
+                    Log.d("IMEI",imeiNumber);
+                    //Firebase Token
+                    FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+                    firebaseToken(imeiNumber);
+                } else {
+                    Toast.makeText(Dashboard.this,"Without permission we check",Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     /**
@@ -274,28 +332,6 @@ public class Dashboard extends AppCompatActivity implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         // Update the buttons state depending on whether location updates are being requested.
 
-    }
-
-    private void firebaseToken()
-    {
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        // Log and toast
-                        String msg = getString(R.string.fcm_token, token);
-                        Log.d(TAG, msg);
-                        //Toast.makeText(Dashboard.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void userAccount()
@@ -429,6 +465,56 @@ public class Dashboard extends AppCompatActivity implements
 
         // Adding request to request queue
         requestQueue.add(jsonObjReq);
+    }
+
+    private void sendTokenToServer(final String im,final String fbtoken,final String un){
+
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Logging In. Please Wait...");
+        pDialog.show();
+
+        showpDialog();
+
+        String url = WebName.weburl+"usernoti.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Toast.makeText(MeetingDetails.this,response,Toast.LENGTH_LONG).show();
+                        //Log.d("Response From Server", response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if(jsonObject.getInt("success") == 1)
+                            {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        hidepDialog();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Dashboard.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("imeinumber",im);
+                params.put("firebasetoken",fbtoken);
+                params.put("username",un);
+
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     private void showpDialog() {

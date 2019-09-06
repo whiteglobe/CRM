@@ -1,17 +1,29 @@
 package com.whiteglobe.crm;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -26,21 +38,33 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     TextInputEditText txtUsername,txtPassword;
     private ProgressDialog pDialog;
-    private String usname,pwd,uname,msg;
+    private String usname,pwd,uname,msg,ip,imeinumber,macaddress;
     SharedPreferences sessionData;
     Intent iLogin;
+
+    private static final int REQUEST_PERMISSIONS = 100;
+    private static final String TAG = "Main Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         if(sessionData.contains("username")){
             startActivity(iLogin);
         }
+
+
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +107,23 @@ public class MainActivity extends AppCompatActivity {
                 {
                     usname = txtUsername.getText().toString();
                     pwd = txtPassword.getText().toString();
-                    userLogin(usname,pwd);
+                    ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                    if (activeNetwork != null) { // connected to the internet
+                        if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                            // connected to wifi
+                            WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                            ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                            userLogin(usname,pwd,ip);
+                            Toast.makeText(getApplicationContext(),macaddress,Toast.LENGTH_LONG).show();
+                        } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                            // connected to the mobile provider's data plan
+                            ip = getIPAddress(true);
+                            userLogin(usname,pwd,ip);
+                            //Toast.makeText(getApplicationContext(),ip,Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    //userLogin(usname,pwd,ip);
                 }
             }
         });
@@ -89,6 +131,32 @@ public class MainActivity extends AppCompatActivity {
         if (!isConnected()) {
             showCustomDialog();
         }
+    }
+
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
     }
 
     public boolean isConnected() {
@@ -153,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         dialogError.getWindow().setAttributes(lp);
     }
 
-    private void userLogin(final String username,final String password){
+    private void userLogin(final String username,final String password, final String ips){
 
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Logging In. Please Wait...");
@@ -168,8 +236,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         //Toast.makeText(MeetingDetails.this,response,Toast.LENGTH_LONG).show();
-                        //parseData(response);
-                        Log.d("Response From Server", response);
+                        //Log.d("Response From Server", response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if(jsonObject.getInt("success") == 1)
@@ -205,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 Map<String,String> params = new HashMap<String, String>();
                 params.put("username",username);
                 params.put("password",password);
+                params.put("ipaddr",ips);
 
                 return params;
             }

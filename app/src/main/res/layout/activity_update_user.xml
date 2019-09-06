@@ -71,7 +71,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageButton
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="@dimen/spacing_mxlarge"
                                 android:layout_height="@dimen/spacing_mxlarge"
                                 android:layout_marginTop="@dimen/spacing_mlarge"
@@ -112,7 +112,7 @@
                                 android:layout_weight="3"
                                 android:orientation="horizontal">
 
-                                <ImageButton
+                                <androidx.appcompat.widget.AppCompatImageView
                                     android:layout_width="@dimen/spacing_mxlarge"
                                     android:layout_height="@dimen/spacing_mxlarge"
                                     android:layout_marginTop="@dimen/spacing_mlarge"
@@ -168,7 +168,7 @@
                                 android:layout_weight="3"
                                 android:orientation="horizontal">
 
-                                <ImageButton
+                                <androidx.appcompat.widget.AppCompatImageView
                                     android:layout_width="@dimen/spacing_mxlarge"
                                     android:layout_height="@dimen/spacing_mxlarge"
                                     android:layout_marginTop="@dimen/spacing_mlarge"
@@ -218,7 +218,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageButton
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imageButton2"
                                 android:layout_width="@dimen/spacing_mxlarge"
                                 android:layout_height="@dimen/spacing_mxlarge"
@@ -253,7 +253,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageButton
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="@dimen/spacing_mxlarge"
                                 android:layout_height="@dimen/spacing_mxlarge"
                                 android:layout_marginTop="@dimen/spacing_mlarge"
@@ -311,7 +311,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageButton
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="@dimen/spacing_mxlarge"
                                 android:layout_height="@dimen/spacing_mxlarge"
                                 android:layout_marginTop="@dimen/spacing_mlarge"
