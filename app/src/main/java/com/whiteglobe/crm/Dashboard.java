@@ -56,7 +56,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings;
+    FloatingActionButton userAccount,logout,leads,meetings,projects;
     SharedPreferences sessionDashboard;
     boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "Dashboard";
@@ -128,6 +128,9 @@ public class Dashboard extends AppCompatActivity implements
 
         //To go in Meetings Activity
         meetings();
+
+        //To go in Projects Activity
+        projects();
     }
 
     @Override
@@ -388,6 +391,19 @@ public class Dashboard extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent iMeetings = new Intent(Dashboard.this,Meetings.class);
                 startActivity(iMeetings);
+            }
+        });
+    }
+
+    private void projects()
+    {
+        projects = findViewById(R.id.projects);
+
+        projects.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iProjects = new Intent(Dashboard.this,Projects.class);
+                startActivity(iProjects);
             }
         });
     }
