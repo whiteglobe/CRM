@@ -92,14 +92,14 @@ public class ProjectTaskDetails extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(ProjectTaskDetails.this);
 
         String url = WebName.weburl+"projecttaskdetails.php?username="+u_name+"&taskid="+taskid+"&projectunique="+projectunique;
-        Log.d("url",url);
+        //Log.d("url",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
+                //Log.d(TAG, response.toString());
                 try {
                     txtProjectTaskTitle.setText(response.getString("PT_Title"));
                     txtProjectTaskDetails.setText(response.getString("PT_Descr"));

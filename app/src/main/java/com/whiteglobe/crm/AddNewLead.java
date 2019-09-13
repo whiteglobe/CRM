@@ -176,9 +176,6 @@ public class AddNewLead extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(MeetingDetails.this,response,Toast.LENGTH_LONG).show();
-                        //parseData(response);
-                        Log.d("Response From Server", response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if(jsonObject.getInt("success") == 1)
@@ -244,14 +241,12 @@ public class AddNewLead extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(AddNewLead.this);
 
         String url = WebName.weburl+"getcountry.php";
-        //Log.d("URL",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
 
                 try {
                     // Parsing json object response
@@ -259,7 +254,6 @@ public class AddNewLead extends AppCompatActivity {
                     if(response.getInt("success") == 1)
                     {
                         JSONArray jsonArray = response.getJSONArray("countrynames");
-                        //Log.d("array",jsonArray.toString());
 
                         JSONObject jsonObject;
 
@@ -267,18 +261,14 @@ public class AddNewLead extends AppCompatActivity {
                         {
                             jsonObject = jsonArray.getJSONObject(i);
                             countryName.add(jsonObject.getString("countryname"));
-                            //Log.d("Phone", jsonObject.getString("RL_Phone"));
                         }
 
                         anlCountry.setAdapter(new ArrayAdapter<String>(AddNewLead.this, android.R.layout.simple_spinner_dropdown_item, countryName));
-                        //Log.d("Length",String.valueOf(allLeads.size()));
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
                 hidepDialog();
             }
@@ -287,8 +277,7 @@ public class AddNewLead extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
                 hidepDialog();
             }
@@ -325,7 +314,6 @@ public class AddNewLead extends AppCompatActivity {
                     if(response.getInt("success") == 1)
                     {
                         JSONArray jsonArray = response.getJSONArray("statenames");
-                        //Log.d("array",jsonArray.toString());
 
                         JSONObject jsonObject;
 
@@ -333,18 +321,14 @@ public class AddNewLead extends AppCompatActivity {
                         {
                             jsonObject = jsonArray.getJSONObject(i);
                             stateName.add(jsonObject.getString("statename"));
-                            //Log.d("Phone", jsonObject.getString("RL_Phone"));
                         }
 
                         anlState.setAdapter(new ArrayAdapter<String>(AddNewLead.this, android.R.layout.simple_spinner_dropdown_item, stateName));
-                        //Log.d("Length",String.valueOf(allLeads.size()));
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
                 hidepDialog();
             }
@@ -353,8 +337,7 @@ public class AddNewLead extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
                 hidepDialog();
             }
@@ -391,7 +374,6 @@ public class AddNewLead extends AppCompatActivity {
                     if(response.getInt("success") == 1)
                     {
                         JSONArray jsonArray = response.getJSONArray("citynames");
-                        //Log.d("array",jsonArray.toString());
 
                         JSONObject jsonObject;
 
@@ -399,18 +381,14 @@ public class AddNewLead extends AppCompatActivity {
                         {
                             jsonObject = jsonArray.getJSONObject(i);
                             cityName.add(jsonObject.getString("cityname"));
-                            //Log.d("Phone", jsonObject.getString("RL_Phone"));
                         }
 
                         anlCity.setAdapter(new ArrayAdapter<String>(AddNewLead.this, android.R.layout.simple_spinner_dropdown_item, cityName));
-                        //Log.d("Length",String.valueOf(allLeads.size()));
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
                 hidepDialog();
             }
@@ -419,8 +397,7 @@ public class AddNewLead extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
                 hidepDialog();
             }

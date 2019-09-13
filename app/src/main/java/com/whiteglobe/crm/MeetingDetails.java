@@ -73,29 +73,21 @@ public class MeetingDetails extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(MeetingDetails.this);
 
         String url = WebName.weburl+"meetingdetails.php?username="+u_name+"&meeting_id="+leadid;
-        //Log.d("url",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
 
                 try {
-                    // Parsing json object response
-                    // response will be a json object
-
                     txtMeetingLeadTitle.setText(response.getString("MeetingForLead"));
                     txtMeetingLeadDate.setText(response.getString("MeetingDate"));
                     txtMeetingLeadTime.setText(response.getString("MeetingTime"));
                     txtMeetingLeadDiscussion.setText(response.getString("MeetingDiscussion"));
-
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
                 hidepDialog();
             }
@@ -104,8 +96,7 @@ public class MeetingDetails extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
                 hidepDialog();
             }
@@ -133,9 +124,6 @@ public class MeetingDetails extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(MeetingDetails.this,response,Toast.LENGTH_LONG).show();
-                        //parseData(response);
-                        //Log.d("Response From Server", response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if(jsonObject.getInt("success") == 1)
@@ -165,7 +153,6 @@ public class MeetingDetails extends AppCompatActivity {
 
                 return params;
             }
-
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);

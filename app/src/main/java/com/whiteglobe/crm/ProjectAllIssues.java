@@ -96,23 +96,18 @@ public class ProjectAllIssues extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(ProjectAllIssues.this);
 
         String url = WebName.weburl+"getuserprojectissues.php?username="+u_name+"&projectunique="+projectUnique;
-        //Log.d("URL",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
-
                 try {
                     // Parsing json object response
                     // response will be a json object
                     if(response.getInt("success") == 1)
                     {
                         JSONArray jsonArray = response.getJSONArray("projectissues");
-                        //Log.d("array",jsonArray.toString());
-
                         JSONObject jsonObject;
 
                         for (int i = 0; i < jsonArray.length(); i++)
@@ -120,7 +115,6 @@ public class ProjectAllIssues extends AppCompatActivity {
                             jsonObject = jsonArray.getJSONObject(i);
                             allProjectIssues.add(new ProjectIssueGs(jsonObject.getString("PI_Title"),jsonObject.getString("PI_Posted_Date"),jsonObject.getString("PI_Status"),jsonObject.getInt("PI_Id")));
                         }
-
                         recyclerViewadapter = new ProjectIssueAdapter(allProjectIssues, getApplicationContext());
                         recyclerView.setAdapter(recyclerViewadapter);
                     }
@@ -130,9 +124,7 @@ public class ProjectAllIssues extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
                 hidepDialog();
             }
@@ -141,8 +133,7 @@ public class ProjectAllIssues extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
                 hidepDialog();
             }

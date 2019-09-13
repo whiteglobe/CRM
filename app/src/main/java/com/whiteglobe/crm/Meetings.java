@@ -81,14 +81,12 @@ public class Meetings extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(Meetings.this);
 
         String url = WebName.weburl+"getusermeetings.php?username="+u_name;
-        //Log.d("URL",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
 
                 try {
                     // Parsing json object response
@@ -96,7 +94,6 @@ public class Meetings extends AppCompatActivity {
                     if(response.getInt("success") == 1)
                     {
                         JSONArray jsonArray = response.getJSONArray("meetings");
-                        //Log.d("array",jsonArray.toString());
 
                         JSONObject jsonObject;
 
@@ -105,20 +102,12 @@ public class Meetings extends AppCompatActivity {
                             jsonObject = jsonArray.getJSONObject(i);
                             allmeetings.add(new MeetingGS(jsonObject.getInt("MeetingId"),jsonObject.getString("MeetingForLead"),jsonObject.getString("MeetingDate"),jsonObject.getString("MeetingTime")));
                         }
-
-
-                        //Log.d("Length",String.valueOf(allLeads.size()));
-
                         recyclerViewadapter = new MeetingsAdapter(allmeetings, getApplicationContext());
                         recyclerView.setAdapter(recyclerViewadapter);
                     }
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
                 hidepDialog();
             }
@@ -127,8 +116,7 @@ public class Meetings extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
                 hidepDialog();
             }

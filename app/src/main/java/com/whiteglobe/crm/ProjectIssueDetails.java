@@ -54,14 +54,12 @@ public class ProjectIssueDetails extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(ProjectIssueDetails.this);
 
         String url = WebName.weburl+"projectissuedetails.php?issueid="+issueid+"&projectunique="+projectunique;
-        //Log.d("url",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
                 try {
                     txtProjectIssueTitle.setText(response.getString("PI_Title"));
                     txtProjectIssueDetails.setText(response.getString("PI_Descr"));

@@ -97,14 +97,12 @@ public class Leads extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(Leads.this);
 
         String url = WebName.weburl+"getuserleads.php?username="+u_name;
-        //Log.d("URL",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
 
                 try {
                     // Parsing json object response
@@ -112,7 +110,6 @@ public class Leads extends AppCompatActivity {
                     if(response.getInt("success") == 1)
                     {
                         JSONArray jsonArray = response.getJSONArray("leads");
-                        //Log.d("array",jsonArray.toString());
 
                         JSONObject jsonObject;
 
@@ -120,22 +117,13 @@ public class Leads extends AppCompatActivity {
                         {
                             jsonObject = jsonArray.getJSONObject(i);
                             allLeads.add(new LeadGS(jsonObject.getInt("RL_Id"),jsonObject.getString("RL_Title"),jsonObject.getString("RL_Company_Name"),jsonObject.getString("RL_Phone")));
-                            //Log.d("Phone", jsonObject.getString("RL_Phone"));
                         }
-
-
-                        //Log.d("Length",String.valueOf(allLeads.size()));
-
                         recyclerViewadapter = new LeadsAdapter(allLeads, getApplicationContext());
                         recyclerView.setAdapter(recyclerViewadapter);
                     }
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
                 }
                 hidepDialog();
             }
@@ -144,8 +132,7 @@ public class Leads extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
                 hidepDialog();
             }

@@ -69,8 +69,6 @@ public class AddProjectIssue extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(MeetingDetails.this,response,Toast.LENGTH_LONG).show();
-                        Log.d("Response From Server", response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if(jsonObject.getInt("success") == 1)
