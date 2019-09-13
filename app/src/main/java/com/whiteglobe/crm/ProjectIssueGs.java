@@ -1,12 +1,13 @@
 package com.whiteglobe.crm;
 
 public class ProjectIssueGs {
-    String issueTitle,issueDate;
+    String issueTitle,issueDate,issueStatus;
     int issueId;
 
-    public ProjectIssueGs(String issueTitle, String issueDate, int issueId) {
+    public ProjectIssueGs(String issueTitle, String issueDate, String issueStatus, int issueId) {
         this.issueTitle = issueTitle;
         this.issueDate = issueDate;
+        this.issueStatus = issueStatus;
         this.issueId = issueId;
     }
 
@@ -24,6 +25,14 @@ public class ProjectIssueGs {
 
     public void setIssueDate(String issueDate) {
         this.issueDate = issueDate;
+    }
+
+    public String getIssueStatus() {
+        return issueStatus;
+    }
+
+    public void setIssueStatus(String issueStatus) {
+        this.issueStatus = issueStatus;
     }
 
     public int getIssueId() {

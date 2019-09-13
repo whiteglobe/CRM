@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatSpinner;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -103,6 +104,18 @@ public class ProjectTaskDetails extends AppCompatActivity {
                     txtProjectTaskTitle.setText(response.getString("PT_Title"));
                     txtProjectTaskDetails.setText(response.getString("PT_Descr"));
                     txtProjectTaskDate.setText(response.getString("PT_Date"));
+                    if(response.getString("PT_Status").equals("Completed"))
+                    {
+                        txtProjectTaskStatus.setTextColor(Color.GREEN);
+                    }
+                    else if(response.getString("PT_Status").equals("Pending"))
+                    {
+                        txtProjectTaskStatus.setTextColor(Color.RED);
+                    }
+                    else if(response.getString("PT_Status").equals("In Progress"))
+                    {
+                        txtProjectTaskStatus.setTextColor(Color.rgb(204,204,0));
+                    }
                     txtProjectTaskStatus.setText(response.getString("PT_Status"));
                     btnChangeProjectTaskStatus.setVisibility(View.VISIBLE);
                     if(response.getString("PT_Status").equals("Completed"))

@@ -3,6 +3,7 @@ package com.whiteglobe.crm;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -66,6 +67,14 @@ public class ProjectIssueDetails extends AppCompatActivity {
                     txtProjectIssueDetails.setText(response.getString("PI_Descr"));
                     txtProjectIssueSolution.setText(response.getString("PI_Solution"));
                     txtProjectIssueDate.setText(response.getString("PI_Posted_Date"));
+                    if(response.getString("PI_Status").equals("Solved"))
+                    {
+                        txtProjectIssueStatus.setTextColor(Color.GREEN);
+                    }
+                    else if(response.getString("PI_Status").equals("New"))
+                    {
+                        txtProjectIssueStatus.setTextColor(Color.RED);
+                    }
                     txtProjectIssueStatus.setText(response.getString("PI_Status"));
                 } catch (JSONException e) {
                     e.printStackTrace();

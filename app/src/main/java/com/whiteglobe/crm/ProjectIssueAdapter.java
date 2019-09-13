@@ -1,6 +1,7 @@
 package com.whiteglobe.crm;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,15 @@ public class ProjectIssueAdapter extends RecyclerView.Adapter<ProjectIssueAdapte
 
         holder.txtCardProjectIssueTitle.setText(getProjectIssuesData.getIssueTitle());
         holder.txtCardProjectIssueDate.setText(getProjectIssuesData.getIssueDate());
+        if(getProjectIssuesData.getIssueStatus().equals("Solved"))
+        {
+            holder.txtCardProjectIssueStatus.setTextColor(Color.GREEN);
+        }
+        else if(getProjectIssuesData.getIssueStatus().equals("New"))
+        {
+            holder.txtCardProjectIssueStatus.setTextColor(Color.RED);
+        }
+        holder.txtCardProjectIssueStatus.setText(getProjectIssuesData.getIssueStatus());
         holder.txtTaskId = getProjectIssuesData.getIssueId();
     }
 
@@ -51,7 +61,7 @@ public class ProjectIssueAdapter extends RecyclerView.Adapter<ProjectIssueAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView txtCardProjectIssueTitle,txtCardProjectIssueDate;
+        public TextView txtCardProjectIssueTitle,txtCardProjectIssueDate,txtCardProjectIssueStatus;
         public int txtTaskId;
 
 
@@ -61,6 +71,7 @@ public class ProjectIssueAdapter extends RecyclerView.Adapter<ProjectIssueAdapte
 
             txtCardProjectIssueTitle = itemView.findViewById(R.id.txtCardProjectIssueTitle) ;
             txtCardProjectIssueDate = itemView.findViewById(R.id.txtCardProjectIssueDate) ;
+            txtCardProjectIssueStatus = itemView.findViewById(R.id.txtCardProjectIssueStatus) ;
         }
     }
 }
