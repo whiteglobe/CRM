@@ -10,7 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProjectDetails"></activity>
+        <activity android:name=".ProjectIssueDetails"></activity>
+        <activity android:name=".AddProjectIssue" />
+        <activity android:name=".ProjectTaskDetails" />
+        <activity android:name=".ProjectAllIssues" />
+        <activity android:name=".ProjectAllTasks" />
+        <activity android:name=".ProjectDetails" />
         <activity android:name=".Projects" />
         <activity android:name=".AddNewLead" />
         <activity android:name=".MeetingDetails" />

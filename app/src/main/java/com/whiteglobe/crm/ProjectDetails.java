@@ -3,9 +3,11 @@ package com.whiteglobe.crm;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +31,7 @@ public class ProjectDetails extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
 
-    TextView txtProjectDetailsDays,txtProjectDetailsHours,txtProjectDetailsMinutes,txtProjectDetailsSeconds,txtProjectDetailsTasksPending,txtProjectDetailsTasksInProgress,txtProjectDetailsTasksCompleted,txtProjectDetailsIssuesNew,txtProjectDetailsIssuesSolved;
+    TextView txtProjectDetailsDays,txtProjectDetailsHours,txtProjectDetailsMinutes,txtProjectDetailsSeconds,txtProjectDetailsTasksPending,txtProjectDetailsTasksInProgress,txtProjectDetailsTasksCompleted,txtProjectDetailsIssuesNew,txtProjectDetailsIssuesSolved,txtAllTasks,txtAllIssues;
 
     private ProgressDialog pDialog;
     private static String TAG = ProjectDetails.class.getSimpleName();
@@ -48,6 +50,26 @@ public class ProjectDetails extends AppCompatActivity {
         txtProjectDetailsTasksCompleted = findViewById(R.id.txtProjectDetailsTasksCompleted);
         txtProjectDetailsIssuesNew = findViewById(R.id.txtProjectDetailsIssuesNew);
         txtProjectDetailsIssuesSolved = findViewById(R.id.txtProjectDetailsIssuesSolved);
+        txtAllTasks = findViewById(R.id.txtAllTasks);
+        txtAllIssues = findViewById(R.id.txtAllIssues);
+
+        txtAllTasks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iAllTasks = new Intent(ProjectDetails.this,ProjectAllTasks.class);
+                iAllTasks.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
+                startActivity(iAllTasks);
+            }
+        });
+
+        txtAllIssues.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iAllIssues = new Intent(ProjectDetails.this,ProjectAllIssues.class);
+                iAllIssues.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
+                startActivity(iAllIssues);
+            }
+        });
 
         String projectenddate = getIntent().getStringExtra("projectenddate")+" 23:59:59";
 

@@ -164,6 +164,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txtAllTasks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_middle"
@@ -273,6 +274,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txtAllIssues"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_middle"
