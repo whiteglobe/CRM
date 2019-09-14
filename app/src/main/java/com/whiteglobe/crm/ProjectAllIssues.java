@@ -93,6 +93,8 @@ public class ProjectAllIssues extends AppCompatActivity {
 
         showpDialog();
 
+        allProjectIssues.clear();
+
         RequestQueue requestQueue = Volley.newRequestQueue(ProjectAllIssues.this);
 
         String url = WebName.weburl+"getuserprojectissues.php?username="+u_name+"&projectunique="+projectUnique;
@@ -151,5 +153,12 @@ public class ProjectAllIssues extends AppCompatActivity {
     private void hidepDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        sessionAllIssues = getSharedPreferences("user_details",MODE_PRIVATE);
+        getAllProjectIssueDataOfUser(sessionAllIssues.getString("uname",null),getIntent().getStringExtra("projectunique"));
     }
 }

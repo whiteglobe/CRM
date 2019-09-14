@@ -134,7 +134,6 @@ public class AddProjectImage extends AppCompatActivity {
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
-                        Log.d("Response From Server",new String(response.data));
                         try {
                             JSONObject obj = new JSONObject(new String(response.data));
                             if(obj.getInt("success") == 1)

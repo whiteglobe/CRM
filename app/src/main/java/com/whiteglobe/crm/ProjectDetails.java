@@ -182,4 +182,13 @@ public class ProjectDetails extends AppCompatActivity {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        String projectenddate = getIntent().getStringExtra("projectenddate")+" 23:59:59";
+
+        countDownStart(projectenddate);
+        getProjectDetails(getIntent().getStringExtra("projectunique"));
+    }
 }

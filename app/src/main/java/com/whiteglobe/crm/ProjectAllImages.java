@@ -78,6 +78,8 @@ public class ProjectAllImages extends AppCompatActivity {
 
         showpDialog();
 
+        allProjectImage.clear();
+
         RequestQueue requestQueue = Volley.newRequestQueue(ProjectAllImages.this);
 
         String url = WebName.weburl+"getuserprojectimages.php?projectunique="+projectUnique;
@@ -136,5 +138,13 @@ public class ProjectAllImages extends AppCompatActivity {
     private void hidepDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        sessionAllImages = getSharedPreferences("user_details",MODE_PRIVATE);
+        //sessionAllImages.getString("uname",null)
+        getAllProjectIssueDataOfUser(getIntent().getStringExtra("projectunique"));
     }
 }

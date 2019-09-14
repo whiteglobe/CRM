@@ -79,6 +79,8 @@ public class ProjectAllTasks extends AppCompatActivity {
 
         showpDialog();
 
+        allProjectTasks.clear();
+
         RequestQueue requestQueue = Volley.newRequestQueue(ProjectAllTasks.this);
 
         String url = WebName.weburl+"getuserprojecttasks.php?username="+u_name+"&projectunique="+projectUnique;
@@ -140,5 +142,12 @@ public class ProjectAllTasks extends AppCompatActivity {
     private void hidepDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        sessionProjectTasks = getSharedPreferences("user_details",MODE_PRIVATE);
+        getAllProjectTaskDataOfUser(sessionProjectTasks.getString("uname",null),getIntent().getStringExtra("projectunique"));
     }
 }
