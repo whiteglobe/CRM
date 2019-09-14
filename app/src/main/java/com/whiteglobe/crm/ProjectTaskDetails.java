@@ -20,10 +20,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProjectTaskDetails extends AppCompatActivity {
 
@@ -35,7 +39,7 @@ public class ProjectTaskDetails extends AppCompatActivity {
     AppCompatSpinner spnProjectTaskStatus;
     AppCompatButton btnChangeProjectTaskStatus,btnUpdateProjectTaskStatus;
 
-    String[] taskStatusArray = new String[]{"Pending","In Progress","Completed"};
+    String[] taskStatusArray = new String[]{"Select Task Status","In Progress","Completed"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,12 @@ public class ProjectTaskDetails extends AppCompatActivity {
         btnUpdateProjectTaskStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(spnProjectTaskStatus.getSelectedItem().equals("Select Task Status")) {
+                    Toast.makeText(getApplicationContext(),"Please Select Appropriate Task Status To Update.",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    updateTaskStatus(Integer.parseInt(getIntent().getStringExtra("taskid")),spnProjectTaskStatus.getSelectedItem().toString());
+                }
             }
         });
     }
@@ -92,14 +101,12 @@ public class ProjectTaskDetails extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(ProjectTaskDetails.this);
 
         String url = WebName.weburl+"projecttaskdetails.php?username="+u_name+"&taskid="+taskid+"&projectunique="+projectunique;
-        //Log.d("url",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
                 try {
                     txtProjectTaskTitle.setText(response.getString("PT_Title"));
                     txtProjectTaskDetails.setText(response.getString("PT_Descr"));
@@ -141,6 +148,59 @@ public class ProjectTaskDetails extends AppCompatActivity {
 
         // Adding request to request queue
         requestQueue.add(jsonObjReq);
+    }
+
+    private void updateTaskStatus(final int taskId,final String taskStatus){
+
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Please Wait...");
+        pDialog.show();
+
+        showpDialog();
+
+        String url = WebName.weburl+"updatetaskstatus.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Response from server",response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if(jsonObject.getInt("success") == 1)
+                            {
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
+                                //Intent iAllIssue = new Intent(AddProjectIssue.this,ProjectAllIssues.class);
+                                finish();
+                            }
+                            else if(jsonObject.getInt("success") == 0)
+                            {
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        hidepDialog();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ProjectTaskDetails.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("taskId",String.valueOf(taskId));
+                params.put("taskStatus",taskStatus);
+
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     private void showpDialog() {

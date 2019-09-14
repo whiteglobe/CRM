@@ -10,7 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProjectIssueDetails"></activity>
+        <activity android:name=".AddProjectImage"></activity>
+        <activity android:name=".ProjectAllImages" />
+        <activity android:name=".ProjectIssueDetails" />
         <activity android:name=".AddProjectIssue" />
         <activity android:name=".ProjectTaskDetails" />
         <activity android:name=".ProjectAllIssues" />
@@ -48,6 +50,7 @@
             android:exported="true"
             android:foregroundServiceType="location" />
     </application>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

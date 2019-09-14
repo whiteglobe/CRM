@@ -31,7 +31,7 @@ public class ProjectDetails extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
 
-    TextView txtProjectDetailsDays,txtProjectDetailsHours,txtProjectDetailsMinutes,txtProjectDetailsSeconds,txtProjectDetailsTasksPending,txtProjectDetailsTasksInProgress,txtProjectDetailsTasksCompleted,txtProjectDetailsIssuesNew,txtProjectDetailsIssuesSolved,txtAllTasks,txtAllIssues;
+    TextView txtProjectDetailsDays,txtProjectDetailsHours,txtProjectDetailsMinutes,txtProjectDetailsSeconds,txtProjectDetailsTasksPending,txtProjectDetailsTasksInProgress,txtProjectDetailsTasksCompleted,txtProjectDetailsIssuesNew,txtProjectDetailsIssuesSolved,txtProjectDetailsProjectImages,txtAllTasks,txtAllIssues,txtAllImages;
 
     private ProgressDialog pDialog;
     private static String TAG = ProjectDetails.class.getSimpleName();
@@ -50,8 +50,10 @@ public class ProjectDetails extends AppCompatActivity {
         txtProjectDetailsTasksCompleted = findViewById(R.id.txtProjectDetailsTasksCompleted);
         txtProjectDetailsIssuesNew = findViewById(R.id.txtProjectDetailsIssuesNew);
         txtProjectDetailsIssuesSolved = findViewById(R.id.txtProjectDetailsIssuesSolved);
+        txtProjectDetailsProjectImages = findViewById(R.id.txtProjectDetailsProjectImages);
         txtAllTasks = findViewById(R.id.txtAllTasks);
         txtAllIssues = findViewById(R.id.txtAllIssues);
+        txtAllImages = findViewById(R.id.txtAllImages);
 
         txtAllTasks.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +70,15 @@ public class ProjectDetails extends AppCompatActivity {
                 Intent iAllIssues = new Intent(ProjectDetails.this,ProjectAllIssues.class);
                 iAllIssues.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
                 startActivity(iAllIssues);
+            }
+        });
+
+        txtAllImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iAllImages = new Intent(ProjectDetails.this,ProjectAllImages.class);
+                iAllImages.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
+                startActivity(iAllImages);
             }
         });
 
@@ -140,8 +151,7 @@ public class ProjectDetails extends AppCompatActivity {
                     txtProjectDetailsTasksCompleted.setText(response.getString("CTPT_Id"));
                     txtProjectDetailsIssuesNew.setText(response.getString("NIPI_Id"));
                     txtProjectDetailsIssuesSolved.setText(response.getString("SIPI_Id"));
-
-
+                    txtProjectDetailsProjectImages.setText(response.getString("PIM_Id"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
