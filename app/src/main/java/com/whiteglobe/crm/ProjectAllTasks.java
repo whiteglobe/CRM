@@ -103,7 +103,7 @@ public class ProjectAllTasks extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++)
                         {
                             jsonObject = jsonArray.getJSONObject(i);
-                            allProjectTasks.add(new ProjectTasksGS(jsonObject.getString("PT_Title"),jsonObject.getString("PT_Date"),jsonObject.getInt("PT_Id")));
+                            allProjectTasks.add(new ProjectTasksGS(jsonObject.getString("PT_Title"),jsonObject.getString("PT_Date"),jsonObject.getString("PT_Status"),jsonObject.getInt("PT_Id")));
                         }
 
                         recyclerViewadapter = new ProjectTasksAdapter(allProjectTasks, getApplicationContext());

@@ -1,12 +1,13 @@
 package com.whiteglobe.crm;
 
 public class ProjectTasksGS {
-    String taskTitle,taskDate;
+    String taskTitle,taskDate,taskStatus;
     int taskID;
 
-    public ProjectTasksGS(String taskTitle, String taskDate, int taskID) {
+    public ProjectTasksGS(String taskTitle, String taskDate, String taskStatus, int taskID) {
         this.taskTitle = taskTitle;
         this.taskDate = taskDate;
+        this.taskStatus = taskStatus;
         this.taskID = taskID;
     }
 
@@ -24,6 +25,14 @@ public class ProjectTasksGS {
 
     public void setTaskDate(String taskDate) {
         this.taskDate = taskDate;
+    }
+
+    public String getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public int getTaskID() {
