@@ -31,7 +31,7 @@ public class ProjectDetails extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
 
-    TextView txtProjectDetailsDays,txtProjectDetailsHours,txtProjectDetailsMinutes,txtProjectDetailsSeconds,txtProjectDetailsTasksPending,txtProjectDetailsTasksInProgress,txtProjectDetailsTasksCompleted,txtProjectDetailsIssuesNew,txtProjectDetailsIssuesSolved,txtProjectDetailsProjectImages,txtAllTasks,txtAllIssues,txtAllImages;
+    TextView txtProjectDetailsDays,txtProjectDetailsHours,txtProjectDetailsMinutes,txtProjectDetailsSeconds,txtProjectDetailsTasksPending,txtProjectDetailsTasksInProgress,txtProjectDetailsTasksCompleted,txtProjectDetailsIssuesNew,txtProjectDetailsIssuesSolved,txtProjectDetailsProjectImages,txtAllTasks,txtAllIssues,txtAllImages,txtAllDocuments,txtProjectDetailsProjectDocuments;
 
     private ProgressDialog pDialog;
     private static String TAG = ProjectDetails.class.getSimpleName();
@@ -52,6 +52,8 @@ public class ProjectDetails extends AppCompatActivity {
         txtProjectDetailsIssuesNew = findViewById(R.id.txtProjectDetailsIssuesNew);
         txtProjectDetailsIssuesSolved = findViewById(R.id.txtProjectDetailsIssuesSolved);
         txtProjectDetailsProjectImages = findViewById(R.id.txtProjectDetailsProjectImages);
+        txtAllDocuments = findViewById(R.id.txtAllDocuments);
+        txtProjectDetailsProjectDocuments = findViewById(R.id.txtProjectDetailsProjectDocuments);
         txtAllTasks = findViewById(R.id.txtAllTasks);
         txtAllIssues = findViewById(R.id.txtAllIssues);
         txtAllImages = findViewById(R.id.txtAllImages);
@@ -80,6 +82,15 @@ public class ProjectDetails extends AppCompatActivity {
                 Intent iAllImages = new Intent(ProjectDetails.this,ProjectAllImages.class);
                 iAllImages.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
                 startActivity(iAllImages);
+            }
+        });
+
+        txtAllDocuments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iAllDocuments = new Intent(ProjectDetails.this,ProjectDocuments.class);
+                iAllDocuments.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
+                startActivity(iAllDocuments);
             }
         });
 
@@ -153,6 +164,7 @@ public class ProjectDetails extends AppCompatActivity {
                     txtProjectDetailsIssuesNew.setText(response.getString("NIPI_Id"));
                     txtProjectDetailsIssuesSolved.setText(response.getString("SIPI_Id"));
                     txtProjectDetailsProjectImages.setText(response.getString("PIM_Id"));
+                    txtProjectDetailsProjectDocuments.setText(response.getString("PD_Id"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
