@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,41 +25,36 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Meetings extends AppCompatActivity {
+public class Products extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     RecyclerView.Adapter recyclerViewadapter;
 
-    SharedPreferences sessionUserAccount;
     private ProgressDialog pDialog;
-    private static String TAG = MainActivity.class.getSimpleName();
+    private static String TAG = Products.class.getSimpleName();
 
-    List<MeetingGS> allmeetings;
+    List<AllProductsGS> allProductCats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_meetings);
+        setContentView(R.layout.activity_products);
         getSupportActionBar().hide();
 
-        recyclerView = findViewById(R.id.recyclerViewMeetings);
+        recyclerView = findViewById(R.id.recyclerViewAllProducts);
         recyclerView.setHasFixedSize(true);
         recyclerViewlayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(recyclerViewlayoutManager);
-        allmeetings = new ArrayList<>();
-
-        sessionUserAccount = getSharedPreferences("user_details",MODE_PRIVATE);
-        getAllMeetingsDataOfUser(sessionUserAccount.getString("uname",null));
+        allProductCats = new ArrayList<>();
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                MeetingGS meetings = allmeetings.get(position);
-                Intent iLeadDetails = new Intent(Meetings.this,MeetingDetails.class);
-                iLeadDetails.putExtra("meeting_id", String.valueOf(meetings.getMeetingId()));
-                startActivity(iLeadDetails);
-                //Toast.makeText(getApplicationContext(), meetings.getMeetingId() + " is selected!", Toast.LENGTH_SHORT).show();
+                AllProductsGS allProductsGS = allProductCats.get(position);
+                Intent iProductDetails = new Intent(Products.this,ProductDetails.class);
+                iProductDetails.putExtra("catid", String.valueOf(allProductsGS.getCat_id()));
+                startActivity(iProductDetails);
             }
 
             @Override
@@ -69,9 +62,11 @@ public class Meetings extends AppCompatActivity {
 
             }
         }));
+
+        getAllProductCategories();
     }
 
-    private void getAllMeetingsDataOfUser(String u_name) {
+    private void getAllProductCategories() {
 
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Loading...");
@@ -79,9 +74,11 @@ public class Meetings extends AppCompatActivity {
 
         showpDialog();
 
-        RequestQueue requestQueue = Volley.newRequestQueue(Meetings.this);
+        allProductCats.clear();
 
-        String url = WebName.weburl+"getusermeetings.php?username="+u_name;
+        RequestQueue requestQueue = Volley.newRequestQueue(Products.this);
+
+        String url = WebName.weburl+"getproductcategories.php";
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
@@ -94,17 +91,22 @@ public class Meetings extends AppCompatActivity {
                     // response will be a json object
                     if(response.getInt("success") == 1)
                     {
-                        JSONArray jsonArray = response.getJSONArray("meetings");
+                        JSONArray jsonArray = response.getJSONArray("productcategories");
 
                         JSONObject jsonObject;
 
                         for (int i = 0; i < jsonArray.length(); i++)
                         {
                             jsonObject = jsonArray.getJSONObject(i);
-                            allmeetings.add(new MeetingGS(jsonObject.getInt("MeetingId"),jsonObject.getString("MeetingForLead"),jsonObject.getString("MeetingDate"),jsonObject.getString("MeetingTime")));
+                            allProductCats.add(new AllProductsGS(jsonObject.getString("productcategoryname"),jsonObject.getInt("productcategoryid")));
                         }
-                        recyclerViewadapter = new MeetingsAdapter(allmeetings, getApplicationContext());
+
+                        recyclerViewadapter = new AllProductsAdapter(allProductCats, getApplicationContext());
                         recyclerView.setAdapter(recyclerViewadapter);
+                    }
+                    else if(response.getInt("success") == 0)
+                    {
+                        Toast.makeText(getApplicationContext(),response.getString("msg"),Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -135,5 +137,11 @@ public class Meetings extends AppCompatActivity {
     private void hidepDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getAllProductCategories();
     }
 }

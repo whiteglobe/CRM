@@ -40,6 +40,7 @@ public class ProjectDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_details);
+        getSupportActionBar().hide();
 
         txtProjectDetailsDays = findViewById(R.id.txtProjectDetailsDays);
         txtProjectDetailsHours = findViewById(R.id.txtProjectDetailsHours);

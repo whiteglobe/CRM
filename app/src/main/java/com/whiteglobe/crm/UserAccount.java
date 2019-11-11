@@ -40,7 +40,6 @@ public class UserAccount extends AppCompatActivity {
         getSupportActionBar().hide();
 
         sessionUserAccount = getSharedPreferences("user_details",MODE_PRIVATE);
-        Toast.makeText(getApplicationContext(),sessionUserAccount.getString("uname",null),Toast.LENGTH_LONG).show();
 
         txtUAusername = findViewById(R.id.txtUAusername);
         txtUAuserrole = findViewById(R.id.txtUAuserrole);
@@ -52,16 +51,6 @@ public class UserAccount extends AppCompatActivity {
         txtUAaddr = findViewById(R.id.txtUAaddr);
         txtUAzip = findViewById(R.id.txtUAzip);
         userImage = findViewById(R.id.imgUAuserimage);
-
-        FloatingActionButton btnUpdateUser = findViewById(R.id.btnEditUser);
-
-        btnUpdateUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent iUpdateUser = new Intent(UserAccount.this,UpdateUser.class);
-                startActivity(iUpdateUser);
-            }
-        });
 
         makeJsonObjectRequest(sessionUserAccount.getString("uname",null));
     }
@@ -96,7 +85,7 @@ public class UserAccount extends AppCompatActivity {
                     txtUAphone.setText(response.getString("userphone"));
                     txtUAaddr.setText(response.getString("useraddr"));
                     txtUAzip.setText(response.getString("userzip"));
-                    Picasso.get().load(response.getString("userimage")).into(userImage);
+                    Picasso.get().load(WebName.imgurl+"user_image/"+response.getString("userimage")).into(userImage);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();

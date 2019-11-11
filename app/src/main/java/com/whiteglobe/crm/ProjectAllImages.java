@@ -59,9 +59,9 @@ public class ProjectAllImages extends AppCompatActivity {
         btnAddProjectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent iAddIssue = new Intent(ProjectAllImages.this,AddProjectImage.class);
-                iAddIssue.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
-                startActivity(iAddIssue);
+                Intent iAddImage = new Intent(ProjectAllImages.this,AddProjectImage.class);
+                iAddImage.putExtra("projectunique", getIntent().getStringExtra("projectunique"));
+                startActivity(iAddImage);
             }
         });
 

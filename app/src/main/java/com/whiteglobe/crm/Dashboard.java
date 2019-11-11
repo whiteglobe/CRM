@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -38,6 +39,13 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,12 +64,14 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers;
     SharedPreferences sessionDashboard;
     boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "Dashboard";
     private ProgressDialog pDialog;
     TelephonyManager telephonyManager;
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+
 
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -114,6 +124,8 @@ public class Dashboard extends AppCompatActivity implements
             }
         }
 
+        switchOnGPS();
+
         //To send userdata to server
         deviceId();
 
@@ -131,6 +143,12 @@ public class Dashboard extends AppCompatActivity implements
 
         //To go in Projects Activity
         projects();
+
+        //To go in Products Activity
+        products();
+
+        //To go in Customers Activity
+        customers();
     }
 
     @Override
@@ -205,8 +223,8 @@ public class Dashboard extends AppCompatActivity implements
                         String token = task.getResult().getToken();
 
                         // Log and toast
-                        String msg = getString(R.string.fcm_token, token);
-                        Log.d(TAG, msg);
+                        //String msg = getString(R.string.fcm_token, token);
+                        //Log.d(TAG, msg);
                         sessionDashboard = getSharedPreferences("user_details",MODE_PRIVATE);
                         sendTokenToServer(imei,token,sessionDashboard.getString("uname",null));
                         //Toast.makeText(Dashboard.this, msg, Toast.LENGTH_SHORT).show();
@@ -263,6 +281,7 @@ public class Dashboard extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         Log.i(TAG, "onRequestPermissionResult");
+        requestPermissions();
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
                 // If user interaction was interrupted, the permission request is cancelled and you
@@ -303,8 +322,8 @@ public class Dashboard extends AppCompatActivity implements
                         return;
                     }
                     String imeiNumber = telephonyManager.getImei();
-                    Toast.makeText(Dashboard.this,imeiNumber,Toast.LENGTH_LONG).show();
-                    Log.d("IMEI",imeiNumber);
+                    //Toast.makeText(Dashboard.this,imeiNumber,Toast.LENGTH_LONG).show();
+                    //Log.d("IMEI",imeiNumber);
                     //Firebase Token
                     FirebaseMessaging.getInstance().setAutoInitEnabled(true);
                     firebaseToken(imeiNumber);
@@ -404,6 +423,32 @@ public class Dashboard extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent iProjects = new Intent(Dashboard.this,Projects.class);
                 startActivity(iProjects);
+            }
+        });
+    }
+
+    private void products()
+    {
+        products = findViewById(R.id.products);
+
+        products.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iProducts = new Intent(Dashboard.this,Products.class);
+                startActivity(iProducts);
+            }
+        });
+    }
+
+    private void customers()
+    {
+        customers = findViewById(R.id.customers);
+
+        customers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iProducts = new Intent(Dashboard.this,Customers.class);
+                startActivity(iProducts);
             }
         });
     }
@@ -541,5 +586,38 @@ public class Dashboard extends AppCompatActivity implements
     private void hidepDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    private void switchOnGPS() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(new LocationRequest().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY));
+
+        Task<LocationSettingsResponse> task = LocationServices.getSettingsClient(this).checkLocationSettings(builder.build());
+        task.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                } catch (ApiException e) {
+                    switch (e.getStatusCode())
+                    {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED :
+                            ResolvableApiException resolvableApiException = (ResolvableApiException) e;
+                            try {
+                                resolvableApiException.startResolutionForResult(Dashboard.this,REQUEST_CHECK_SETTINGS);
+                            } catch (IntentSender.SendIntentException e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
+
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            //open setting and switch on GPS manually
+                            break;
+                    }
+                }
+            }
+        });
+        //Give permission to access GPS
+        //ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 11);
     }
 }
