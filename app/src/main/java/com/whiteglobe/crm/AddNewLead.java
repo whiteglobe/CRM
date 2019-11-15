@@ -48,6 +48,7 @@ public class AddNewLead extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_lead);
+        getSupportActionBar().hide();
 
         anlCompanyName = findViewById(R.id.anlCompanyName);
         anlContactPersonName = findViewById(R.id.anlContactPersonName);

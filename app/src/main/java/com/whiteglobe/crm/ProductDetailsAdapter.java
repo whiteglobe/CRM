@@ -42,6 +42,7 @@ public class ProductDetailsAdapter  extends RecyclerView.Adapter<ProductDetailsA
         ProductDetailsGS productDetailsGS =  productdata.get(position);
 
         holder.txtCardProductName.setText(productDetailsGS.getProdName());
+        holder.txtCardProductDescr.setText(productDetailsGS.getProdDescr());
         holder.txtCardProductBrand.setText(productDetailsGS.getProdBrand());
         holder.txtCardProductContent.setText(productDetailsGS.getProdContent());
 
@@ -55,7 +56,7 @@ public class ProductDetailsAdapter  extends RecyclerView.Adapter<ProductDetailsA
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView txtCardProductName,txtCardProductBrand,txtCardProductContent;
+        public TextView txtCardProductName,txtCardProductDescr,txtCardProductBrand,txtCardProductContent;
         public AppCompatImageView imgCardProductImage;
 
 
@@ -64,6 +65,7 @@ public class ProductDetailsAdapter  extends RecyclerView.Adapter<ProductDetailsA
             super(itemView);
 
             txtCardProductName = itemView.findViewById(R.id.txtCardProductName) ;
+            txtCardProductDescr = itemView.findViewById(R.id.txtCardProductDescr) ;
             txtCardProductBrand = itemView.findViewById(R.id.txtCardProductBrand) ;
             txtCardProductContent = itemView.findViewById(R.id.txtCardProductContent) ;
             imgCardProductImage = itemView.findViewById(R.id.imgCardProductImage) ;

@@ -21,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProjectDocuments"></activity>
+        <activity android:name=".Attendance"></activity>
+        <activity android:name=".ProjectDocuments" />
         <activity android:name=".CustomerDetails" />
         <activity android:name=".Customers" />
         <activity android:name=".ProductDetails" />

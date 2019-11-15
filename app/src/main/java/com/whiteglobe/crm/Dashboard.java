@@ -64,7 +64,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance;
     SharedPreferences sessionDashboard;
     boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "Dashboard";
@@ -118,10 +118,18 @@ public class Dashboard extends AppCompatActivity implements
         myReceiver = new MyReceiver();
 
         // Check that the user hasn't revoked permissions by going to Settings.
-        if (Utils.requestingLocationUpdates(this)) {
-            if (!checkPermissions()) {
-                requestPermissions();
-            }
+        if (!checkPermissions()) {
+            requestPermissions();
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
+            return;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+            return;
         }
 
         switchOnGPS();
@@ -149,6 +157,9 @@ public class Dashboard extends AppCompatActivity implements
 
         //To go in Customers Activity
         customers();
+
+        //To take User Attendance
+        attendance();
     }
 
     @Override
@@ -236,14 +247,11 @@ public class Dashboard extends AppCompatActivity implements
      * Returns the current state of the permissions needed.
      */
     private boolean checkPermissions() {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
+        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
+        boolean shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
 
         // Provide an additional rationale to the user. This would happen if the user denied the
         // request previously, but didn't check the "Don't ask again" checkbox.
@@ -257,9 +265,7 @@ public class Dashboard extends AppCompatActivity implements
                         @Override
                         public void onClick(View view) {
                             // Request permission
-                            ActivityCompat.requestPermissions(Dashboard.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                            ActivityCompat.requestPermissions(Dashboard.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSIONS_REQUEST_CODE);
                         }
                     })
                     .show();
@@ -281,46 +287,16 @@ public class Dashboard extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         Log.i(TAG, "onRequestPermissionResult");
-        requestPermissions();
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length <= 0) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted.
-                mService.requestLocationUpdates();
-            } else {
-                // Permission denied.
-                Snackbar.make(
-                        findViewById(R.id.activity_dashboard),
-                        R.string.permission_denied_explanation,
-                        Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.settings, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Build intent that displays the App settings screen.
-                                Intent intent = new Intent();
-                                intent.setAction(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package",
-                                        BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        })
-                        .show();
-            }
-        }
-
         switch (requestCode) {
+            case 2:
+            case 3:
+            case REQUEST_PERMISSIONS_REQUEST_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission was granted.
+                    mService.requestLocationUpdates();
+                }
             case 101:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
-                        return;
-                    }
                     String imeiNumber = telephonyManager.getImei();
                     //Toast.makeText(Dashboard.this,imeiNumber,Toast.LENGTH_LONG).show();
                     //Log.d("IMEI",imeiNumber);
@@ -330,7 +306,7 @@ public class Dashboard extends AppCompatActivity implements
                 } else {
                     Toast.makeText(Dashboard.this,"Without permission we check",Toast.LENGTH_LONG).show();
                 }
-                break;
+
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
@@ -449,6 +425,19 @@ public class Dashboard extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent iProducts = new Intent(Dashboard.this,Customers.class);
                 startActivity(iProducts);
+            }
+        });
+    }
+
+    private void attendance()
+    {
+        attendance = findViewById(R.id.attendance);
+
+        attendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iAttendance = new Intent(Dashboard.this,Attendance.class);
+                startActivity(iAttendance);
             }
         });
     }

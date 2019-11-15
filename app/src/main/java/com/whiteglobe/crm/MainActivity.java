@@ -85,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(iLogin);
         }
 
-
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                             WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
                             ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
                             userLogin(usname,pwd,ip);
-                            Toast.makeText(getApplicationContext(),macaddress,Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(),macaddress,Toast.LENGTH_LONG).show();
                         } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
                             // connected to the mobile provider's data plan
                             ip = getIPAddress(true);

@@ -79,7 +79,7 @@ public class ProductDetails extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++)
                         {
                             jsonObject = jsonArray.getJSONObject(i);
-                            allProductDetails.add(new ProductDetailsGS(jsonObject.getString("productname"),jsonObject.getString("productcontent"),jsonObject.getString("productbrand"),jsonObject.getString("productimage")));
+                            allProductDetails.add(new ProductDetailsGS(jsonObject.getString("productname"),jsonObject.getString("productdescr"),jsonObject.getString("productcontent"),jsonObject.getString("productbrand"),jsonObject.getString("productimage")));
                         }
                         recyclerViewadapter = new ProductDetailsAdapter(allProductDetails, getApplicationContext());
                         recyclerView.setAdapter(recyclerViewadapter);

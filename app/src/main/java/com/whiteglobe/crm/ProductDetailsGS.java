@@ -1,10 +1,11 @@
 package com.whiteglobe.crm;
 
 public class ProductDetailsGS {
-    String prodName,prodContent, prodBrand, prodImage;
+    String prodName,prodDescr,prodContent, prodBrand, prodImage;
 
-    public ProductDetailsGS(String prodName, String prodContent, String prodBrand, String prodImage) {
+    public ProductDetailsGS(String prodName, String prodDescr, String prodContent, String prodBrand, String prodImage) {
         this.prodName = prodName;
+        this.prodDescr = prodDescr;
         this.prodContent = prodContent;
         this.prodBrand = prodBrand;
         this.prodImage = prodImage;
@@ -16,6 +17,14 @@ public class ProductDetailsGS {
 
     public void setProdName(String prodName) {
         this.prodName = prodName;
+    }
+
+    public String getProdDescr() {
+        return prodDescr;
+    }
+
+    public void setProdDescr(String prodDescr) {
+        this.prodDescr = prodDescr;
     }
 
     public String getProdContent() {

@@ -1,12 +1,22 @@
 package com.whiteglobe.crm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DownloadManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -36,6 +46,11 @@ public class ProjectDocuments extends AppCompatActivity {
 
     List<ProjectDocumentsGS> allProjectDocuments;
 
+    DownloadManager downloadManager;
+    Uri downloadURI;
+    long refid;
+    ArrayList<Long> list = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +63,28 @@ public class ProjectDocuments extends AppCompatActivity {
         recyclerView.setLayoutManager(recyclerViewlayoutManager);
         allProjectDocuments = new ArrayList<>();
 
+        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+
+        registerReceiver(onComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                list.clear();
+                final ProjectDocumentsGS projectDocumentsGS = allProjectDocuments.get(position);
+                String mUrl = WebName.imgurl + "project_files/" + getIntent().getStringExtra("projectunique") + "/" + projectDocumentsGS.getDocName();
+                downloadURI = Uri.parse(mUrl);
 
+                DownloadManager.Request request = new DownloadManager.Request(downloadURI);
+                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+                request.setAllowedOverRoaming(false);
+                request.setTitle("Super India BuildPro Downloading");
+                request.setDescription("Downloading " + projectDocumentsGS.getDocName());
+                request.setVisibleInDownloadsUi(true);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"  + projectDocumentsGS.getDocName());
+                refid = downloadManager.enqueue(request);
+                Log.e("OUT", "" + refid);
+                list.add(refid);
             }
 
             @Override
@@ -61,6 +94,40 @@ public class ProjectDocuments extends AppCompatActivity {
         }));
 
         getAllProjectDocumentsOfUser(getIntent().getStringExtra("projectunique"));
+    }
+
+    BroadcastReceiver onComplete = new BroadcastReceiver() {
+
+        public void onReceive(Context ctxt, Intent intent) {
+            long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            Log.e("IN", "" + referenceId);
+
+            list.remove(referenceId);
+
+            if (list.isEmpty())
+            {
+                String CHANNEL_ID = "my_channel_01";// The id of the channel.
+                CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+                NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(ProjectDocuments.this,CHANNEL_ID)
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setContentTitle("Super India BuildPro")
+                                .setContentText("File Download Completed.");
+
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(mChannel);
+                notificationManager.notify(455, mBuilder.build());
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(onComplete);
     }
 
     private void getAllProjectDocumentsOfUser(String projectUnique) {
