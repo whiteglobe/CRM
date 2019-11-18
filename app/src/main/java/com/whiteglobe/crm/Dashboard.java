@@ -29,6 +29,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -64,7 +65,8 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword;
+    TextView txtUserMapLocations;
     SharedPreferences sessionDashboard;
     boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "Dashboard";
@@ -160,6 +162,12 @@ public class Dashboard extends AppCompatActivity implements
 
         //To take User Attendance
         attendance();
+
+        //To view users on map
+        tasks();
+
+        //To change password
+        changepassword();
     }
 
     @Override
@@ -438,6 +446,40 @@ public class Dashboard extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent iAttendance = new Intent(Dashboard.this,Attendance.class);
                 startActivity(iAttendance);
+            }
+        });
+    }
+
+    private void tasks()
+    {
+        tasks = findViewById(R.id.tasks);
+        txtUserMapLocations = findViewById(R.id.txtUserMapLocations);
+
+        if(sessionDashboard.getString("uname",null).equals("superindia"))
+        {
+            tasks.setImageResource(R.drawable.ic_place_black_24dp);
+            tasks.setBackgroundColor(getResources().getColor(R.color.green_700));
+            txtUserMapLocations.setText("Map");
+
+            tasks.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent iTasks = new Intent(Dashboard.this,SelectMap.class);
+                    startActivity(iTasks);
+                }
+            });
+        }
+    }
+
+    private void changepassword()
+    {
+        changepassword = findViewById(R.id.changepassword);
+
+        changepassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iChangePassword = new Intent(Dashboard.this,ChangePassword.class);
+                startActivity(iChangePassword);
             }
         });
     }

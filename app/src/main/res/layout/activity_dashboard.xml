@@ -102,7 +102,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Account"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
 
                         </LinearLayout>
 
@@ -131,7 +131,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Customers"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -159,7 +159,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Attendance"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -186,7 +186,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Marketing"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -226,7 +226,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Leads"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
 
                         </LinearLayout>
 
@@ -254,7 +254,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Services"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -282,7 +282,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Meetings"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -310,133 +310,11 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Projects"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                     </LinearLayout>
 
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_mlarge" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="true"
-                                android:tint="@android:color/white"
-                                app:backgroundTint="@color/cyan_300"
-                                app:elevation="0dp"
-                                app:fabSize="mini"
-                                app:rippleColor="@android:color/white"
-                                app:srcCompat="@drawable/ic_receipt" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="Invoice"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:id="@+id/products"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="true"
-                                android:tint="@android:color/white"
-                                app:backgroundTint="@color/teal_500"
-                                app:elevation="0dp"
-                                app:fabSize="mini"
-                                app:rippleColor="@android:color/white"
-                                app:srcCompat="@drawable/ic_fire_extinguisher" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="Products"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="true"
-                                android:tint="@android:color/white"
-                                app:backgroundTint="@color/deep_orange_300"
-                                app:elevation="0dp"
-                                app:fabSize="mini"
-                                app:rippleColor="@android:color/white"
-                                app:srcCompat="@drawable/ic_progress_report" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="Reports"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:clickable="true"
-                                android:tint="@android:color/white"
-                                app:backgroundTint="@color/blue_grey_400"
-                                app:elevation="0dp"
-                                app:fabSize="mini"
-                                app:rippleColor="@android:color/white"
-                                app:srcCompat="@drawable/ic_description" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_medium"
-                                android:text="Quotes"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
-                        </LinearLayout>
-
-                    </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -473,8 +351,36 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Chat"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
 
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:id="@+id/products"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:tint="@android:color/white"
+                                app:backgroundTint="@color/teal_500"
+                                app:elevation="0dp"
+                                app:fabSize="mini"
+                                app:rippleColor="@android:color/white"
+                                app:srcCompat="@drawable/ic_fire_extinguisher" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="Products"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -489,6 +395,103 @@
                                 android:layout_height="wrap_content"
                                 android:clickable="true"
                                 android:tint="@android:color/white"
+                                app:backgroundTint="@color/deep_orange_300"
+                                app:elevation="0dp"
+                                app:fabSize="mini"
+                                app:rippleColor="@android:color/white"
+                                app:srcCompat="@drawable/ic_progress_report" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="Reports"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@color/grey_900" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:tint="@android:color/white"
+                                app:backgroundTint="@color/blue_grey_400"
+                                app:elevation="0dp"
+                                app:fabSize="mini"
+                                app:rippleColor="@android:color/white"
+                                app:srcCompat="@drawable/ic_description" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="Quotes"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@color/grey_900" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacing_mlarge" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:id="@+id/changepassword"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:tint="@android:color/white"
+                                app:backgroundTint="@color/cyan_A700"
+                                app:elevation="0dp"
+                                app:fabSize="mini"
+                                app:rippleColor="@android:color/white"
+                                app:srcCompat="@drawable/ic_lock_open_black_24dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:text="Change Password"
+                                android:gravity="center"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                android:textColor="@color/grey_900" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:id="@+id/tasks"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:tint="@android:color/white"
                                 app:backgroundTint="@color/deep_purple_400"
                                 app:elevation="0dp"
                                 app:fabSize="mini"
@@ -496,12 +499,14 @@
                                 app:srcCompat="@drawable/ic_tasks" />
 
                             <TextView
+                                android:id="@+id/txtUserMapLocations"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Tasks"
+                                android:gravity="center"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
 
                         </LinearLayout>
 
@@ -529,7 +534,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Documents"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -557,7 +562,7 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:text="Logout"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
+                                android:textColor="@color/grey_900" />
 
                         </LinearLayout>
 
