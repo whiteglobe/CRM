@@ -8,6 +8,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -42,7 +43,7 @@ import java.util.Map;
 public class Attendance extends AppCompatActivity {
 
     TextView txtAttendance;
-    AppCompatButton btnAttedannce;
+    AppCompatButton btnAttedannce,btnApplyForLeave;
 
     SharedPreferences sessionAttendance;
     private ProgressDialog pDialog;
@@ -59,6 +60,7 @@ public class Attendance extends AppCompatActivity {
 
         txtAttendance = findViewById(R.id.txtAttendance);
         btnAttedannce = findViewById(R.id.btnAttedannce);
+        btnApplyForLeave = findViewById(R.id.btnApplyForLeave);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String currentDate = sdf.format(new Date());
@@ -83,6 +85,14 @@ public class Attendance extends AppCompatActivity {
         sessionAttendance = getSharedPreferences("user_details",MODE_PRIVATE);
 
         getUserAttendance(sessionAttendance.getString("uname",null));
+
+        btnApplyForLeave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iApplyForLeave = new Intent(Attendance.this,ApplyForLeave.class);
+                startActivity(iApplyForLeave);
+            }
+        });
 
         btnAttedannce.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +134,7 @@ public class Attendance extends AppCompatActivity {
                             if(jsonObject.getInt("success") == 1)
                             {
                                 Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
+                                btnAttedannce.setBackgroundColor(getResources().getColor(R.color.green_900));
                                 btnAttedannce.setEnabled(false);
                             }
                             else if(jsonObject.getInt("success") == 0)
@@ -196,6 +207,7 @@ public class Attendance extends AppCompatActivity {
                     // response will be a json object
                     if(response.getInt("success") == 1)
                     {
+                        btnAttedannce.setBackgroundColor(getResources().getColor(R.color.green_900));
                         btnAttedannce.setEnabled(false);
                     }
                     else if(response.getInt("success") == 0)

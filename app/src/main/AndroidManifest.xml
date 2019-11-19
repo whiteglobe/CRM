@@ -25,7 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SelectUserOnMap"></activity>
+        <activity android:name=".ApplyForLeave"></activity>
+        <activity android:name=".SelectUserOnMap" />
         <activity android:name=".SelectMap" />
         <activity android:name=".ChangePassword" />
         <!--

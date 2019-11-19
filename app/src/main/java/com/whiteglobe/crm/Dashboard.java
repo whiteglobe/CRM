@@ -455,7 +455,7 @@ public class Dashboard extends AppCompatActivity implements
         tasks = findViewById(R.id.tasks);
         txtUserMapLocations = findViewById(R.id.txtUserMapLocations);
 
-        if(sessionDashboard.getString("uname",null).equals("superindia"))
+        if(sessionDashboard.getString("uname",null).equals("superindia") || sessionDashboard.getString("uname",null).equals("allarakhavohra"))
         {
             tasks.setImageResource(R.drawable.ic_place_black_24dp);
             tasks.setBackgroundColor(getResources().getColor(R.color.green_700));
