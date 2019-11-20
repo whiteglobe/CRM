@@ -102,9 +102,6 @@ public class Attendance extends AppCompatActivity {
                 {
                     if (location != null) {
                         makeAttendance(sessionAttendance.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),currentDateandTime);
-                        /*Log.d("Latitude",String.valueOf(location.getLatitude()));
-                        Log.d("Longitude",String.valueOf(location.getLongitude()));
-                        Log.d("Date Time",currentDateandTime);*/
                     }
                 }
                 else

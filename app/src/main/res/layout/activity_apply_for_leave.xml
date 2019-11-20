@@ -209,6 +209,15 @@
                 android:text="Apply For Leave"
                 android:theme="@style/Button.Primary" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnViewAllLeaves"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="View All Leaves"
+                android:theme="@style/Button.Primary" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

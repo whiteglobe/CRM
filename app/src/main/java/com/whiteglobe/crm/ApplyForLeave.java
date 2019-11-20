@@ -6,7 +6,11 @@ import androidx.appcompat.widget.AppCompatEditText;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,15 +18,31 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class ApplyForLeave extends AppCompatActivity {
 
-    AppCompatButton btnApplyLeave;
+    AppCompatButton btnApplyLeave,btnViewAllLeaves;
     AppCompatEditText leaveFromDate,leaveToDate,leaveReason;
     final Calendar myCalendar = Calendar.getInstance();
+
+    SharedPreferences sessionApplyForLeave;
+    private ProgressDialog pDialog;
+    private static String TAG = ApplyForLeave.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +51,12 @@ public class ApplyForLeave extends AppCompatActivity {
         getSupportActionBar().hide();
 
         btnApplyLeave = findViewById(R.id.btnApplyLeave);
+        btnViewAllLeaves = findViewById(R.id.btnViewAllLeaves);
         leaveFromDate = findViewById(R.id.leaveFromDate);
         leaveToDate = findViewById(R.id.leaveToDate);
         leaveReason = findViewById(R.id.leaveReason);
+
+        sessionApplyForLeave = getSharedPreferences("user_details",MODE_PRIVATE);
 
         final DatePickerDialog.OnDateSetListener dateFrom = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -98,10 +121,87 @@ public class ApplyForLeave extends AppCompatActivity {
                 }
                 else if(leaveFromDate.getText().toString().compareTo(leaveToDate.getText().toString()) < 0 || leaveFromDate.getText().toString().compareTo(leaveToDate.getText().toString()) == 0)
                 {
-                    Toast.makeText(getApplicationContext(),"Best Of Luck.",Toast.LENGTH_LONG).show();
+                    applyForLeave(sessionApplyForLeave.getString("uname",null),leaveFromDate.getText().toString(),leaveToDate.getText().toString(),leaveReason.getText().toString());
                 }
             }
         });
+
+        btnViewAllLeaves.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iUserLeavesAll = new Intent(ApplyForLeave.this,ViewUserLeaves.class);
+                startActivity(iUserLeavesAll);
+            }
+        });
+    }
+
+    private void applyForLeave(final String username,final String fromdate,final String todate,final String reason){
+
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Applying For Leave...");
+        pDialog.show();
+
+        showpDialog();
+
+        String url = WebName.weburl+"applyforleave.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("Response",response);
+                            JSONObject jsonObject = new JSONObject(response);
+                            if(jsonObject.getInt("success") == 1)
+                            {
+                                leaveFromDate.setText("");
+                                leaveToDate.setText("");
+                                leaveReason.setText("");
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
+                                Intent iUserLeaves = new Intent(ApplyForLeave.this,ViewUserLeaves.class);
+                                startActivity(iUserLeaves);
+                            }
+                            else if(jsonObject.getInt("success") == 0)
+                            {
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        hidepDialog();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ApplyForLeave.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("username",username);
+                params.put("fromdate",fromdate);
+                params.put("todate",todate);
+                params.put("reason",reason);
+
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void showpDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hidepDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 
     private void updateLabelFromDate() {
