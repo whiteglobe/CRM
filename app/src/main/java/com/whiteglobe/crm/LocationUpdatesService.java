@@ -281,16 +281,12 @@ public class LocationUpdatesService extends Service {
                 new Intent(this, MainActivity.class), 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .addAction(R.drawable.ic_launch, getString(R.string.launch_activity),
-                        activityPendingIntent)
-                .addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
-                        servicePendingIntent)
-                .setContentText(text)
-                .setContentTitle(Utils.getLocationTitle(this))
+                .setContentText("Welcome "+sessionLocationUpdatesService.getString("username",null))
+                .setContentTitle("Super India BuildPro")
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker(text)
+                .setTicker("Welcome "+sessionLocationUpdatesService.getString("username",null))
                 .setWhen(System.currentTimeMillis());
 
         // Set the Channel ID for Android O.

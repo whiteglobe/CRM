@@ -67,10 +67,10 @@ public class Customers extends AppCompatActivity {
         }));
 
         sessionCustomers = getSharedPreferences("user_details",MODE_PRIVATE);
-        getAllCustomerDataOfUser(sessionCustomers.getString("uname",null));
+        getAllCustomerDataOfUser();
     }
 
-    private void getAllCustomerDataOfUser(String u_name) {
+    private void getAllCustomerDataOfUser() {
 
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Loading...");
@@ -80,7 +80,7 @@ public class Customers extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(Customers.this);
 
-        String url = WebName.weburl+"getusercustomers.php?username="+u_name;
+        String url = WebName.weburl+"getusercustomers.php";
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {

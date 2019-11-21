@@ -117,41 +117,13 @@ public class AddNewLead extends AppCompatActivity {
                     anlCompanyName.findFocus();
                     anlCompanyName.setError("Please Enter Company Name.");
                 }
-                else if(anlContactPersonName.getText().toString().equals(""))
-                {
-                    anlContactPersonName.setError("Please Enter Contact Person Name.");
-                }
                 else if(anlPhoneNumber.getText().toString().equals(""))
                 {
                     anlPhoneNumber.setError("Please Enter Phone Number.");
                 }
-                else if(anlLeadTitle.getText().toString().equals(""))
-                {
-                    anlLeadTitle.setError("Please Enter Lead Title.");
-                }
-                else if(anlEmail.getText().toString().equals(""))
-                {
-                    anlEmail.setError("Please Enter Email.");
-                }
                 else if(anlAddressStreet.getText().toString().equals(""))
                 {
                     anlAddressStreet.setError("Please Enter Address Street.");
-                }
-                else if(anlZipcode.getText().toString().equals(""))
-                {
-                    anlZipcode.setError("Please Enter Zipcode.");
-                }
-                else if(anlLeadStatusDescription.getText().toString().equals(""))
-                {
-                    anlLeadStatusDescription.setError("Please Enter Lead Status Description.");
-                }
-                else if(anlLeadSourceDescription.getText().toString().equals(""))
-                {
-                    anlLeadSourceDescription.setError("Please Enter Lead Source Description.");
-                }
-                else if(anlOpportunityAmount.getText().toString().equals(""))
-                {
-                    anlOpportunityAmount.setError("Please Enter Opportunity Amount");
                 }
                 else
                 {
@@ -177,7 +149,9 @@ public class AddNewLead extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d("Response",""+response);
                         try {
+
                             JSONObject jsonObject = new JSONObject(response);
                             if(jsonObject.getInt("success") == 1)
                             {

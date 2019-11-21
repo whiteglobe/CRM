@@ -68,7 +68,6 @@ public class Dashboard extends AppCompatActivity implements
     FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword;
     TextView txtUserMapLocations;
     SharedPreferences sessionDashboard;
-    boolean doubleBackToExitPressedOnce = false;
     private static final String TAG = "Dashboard";
     private ProgressDialog pDialog;
     TelephonyManager telephonyManager;
@@ -301,7 +300,7 @@ public class Dashboard extends AppCompatActivity implements
             case REQUEST_PERMISSIONS_REQUEST_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission was granted.
-                    mService.requestLocationUpdates();
+                    //mService.requestLocationUpdates();
                 }
             case 101:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -327,7 +326,7 @@ public class Dashboard extends AppCompatActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
-            senLocationDataToServer(sessionDashboard.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
+            //senLocationDataToServer(sessionDashboard.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
             if (location != null) {
                 //Toast.makeText(Dashboard.this, Utils.getLocationText(location),Toast.LENGTH_SHORT).show();
             }
@@ -486,77 +485,16 @@ public class Dashboard extends AppCompatActivity implements
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Log.d(this.getClass().getName(), "back button pressed");
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            super.onKeyDown(keyCode, event);
+            return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return false;
     }
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
 
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 2000);
-    }
-
-    public void senLocationDataToServer(String u_name,String lat,String lng){
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Loading...");
-        pDialog.show();
-
-        showpDialog();
-
-        RequestQueue requestQueue = Volley.newRequestQueue(Dashboard.this);
-
-        String url = WebName.weburl+"userlocations.php?username="+u_name+"&latitude="+lat+"&longitude="+lng;
-        Log.d("url",url);
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                url , null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
-
-                try {
-                    // Parsing json object response
-                    // response will be a json object
-                    Log.d("Response",response.getString("success"));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-                hidepDialog();
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
-                // hide the progress dialog
-                hidepDialog();
-            }
-        });
-
-        // Adding request to request queue
-        requestQueue.add(jsonObjReq);
     }
 
     private void sendTokenToServer(final String im,final String fbtoken,final String un){

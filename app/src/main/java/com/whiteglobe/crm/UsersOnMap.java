@@ -3,6 +3,9 @@ package com.whiteglobe.crm;
 import androidx.fragment.app.FragmentActivity;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,13 +21,20 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,9 +99,36 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
                     {
                         jsonObject = jsonArray.getJSONObject(i);
 
-                        LatLng userloc = new LatLng(Double.valueOf(jsonObject.getString("latitude")), Double.valueOf(jsonObject.getString("longitude")));
-                        mMap.addMarker(new MarkerOptions().position(userloc).title(jsonObject.getString("username") + " at " + jsonObject.getString("locationtime")));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(userloc));
+
+                        final JSONObject finalJsonObject = jsonObject;
+                        Picasso.get().load(WebName.imgurl+"user_image/"+jsonObject.getString("userphoto")).into(new Target() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                LatLng userloc = null;
+                                try {
+                                    int height = 200;
+                                    int width = 200;
+                                    userloc = new LatLng(Double.valueOf(finalJsonObject.getString("latitude")), Double.valueOf(finalJsonObject.getString("longitude")));
+                                    mMap.addMarker(new MarkerOptions().position(userloc).title(finalJsonObject.getString("username") + " at " + finalJsonObject.getString("locationtime")).icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(bitmap,width,height,false))));
+                                    float zoomLevel = 7.5f; //This goes up to 21
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userloc, zoomLevel));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        });
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -112,6 +149,21 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
 
         // Adding request to request queue
         requestQueue.add(jsonObjReq);
+    }
+
+    public Bitmap getBitmapFromURL(String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void showpDialog() {
