@@ -59,12 +59,9 @@ public class MainActivity extends AppCompatActivity {
 
     TextInputEditText txtUsername,txtPassword;
     private ProgressDialog pDialog;
-    private String usname,pwd,uname,msg,ip,imeinumber,macaddress;
+    private String usname,pwd,uname,msg,ip;
     SharedPreferences sessionData;
     Intent iLogin;
-
-    private static final int REQUEST_PERMISSIONS = 100;
-    private static final String TAG = "Main Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,15 +110,12 @@ public class MainActivity extends AppCompatActivity {
                             WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
                             ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
                             userLogin(usname,pwd,ip);
-                            //Toast.makeText(getApplicationContext(),macaddress,Toast.LENGTH_LONG).show();
                         } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
                             // connected to the mobile provider's data plan
                             ip = getIPAddress(true);
                             userLogin(usname,pwd,ip);
-                            //Toast.makeText(getApplicationContext(),ip,Toast.LENGTH_LONG).show();
                         }
                     }
-                    //userLogin(usname,pwd,ip);
                 }
             }
         });

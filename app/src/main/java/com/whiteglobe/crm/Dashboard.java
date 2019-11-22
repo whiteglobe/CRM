@@ -12,7 +12,10 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +29,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -59,7 +63,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Dashboard extends AppCompatActivity implements
@@ -133,10 +141,14 @@ public class Dashboard extends AppCompatActivity implements
             return;
         }
 
+        telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
+            return;
+        }
+
         switchOnGPS();
 
-        //To send userdata to server
-        deviceId();
 
         //To go in User Account Activity
         userAccount();
@@ -218,14 +230,6 @@ public class Dashboard extends AppCompatActivity implements
         super.onStop();
     }
 
-    private void deviceId() {
-        telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
-            return;
-        }
-    }
-
     private void firebaseToken(final String imei)
     {
         FirebaseInstanceId.getInstance().getInstanceId()
@@ -305,8 +309,6 @@ public class Dashboard extends AppCompatActivity implements
             case 101:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     String imeiNumber = telephonyManager.getImei();
-                    //Toast.makeText(Dashboard.this,imeiNumber,Toast.LENGTH_LONG).show();
-                    //Log.d("IMEI",imeiNumber);
                     //Firebase Token
                     FirebaseMessaging.getInstance().setAutoInitEnabled(true);
                     firebaseToken(imeiNumber);
@@ -361,6 +363,21 @@ public class Dashboard extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 mService.removeLocationUpdates();
+                ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                String ip;
+                if (activeNetwork != null) { // connected to the internet
+                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                        // connected to wifi
+                        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                        ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                        sendUserLogToServer(sessionDashboard.getString("uname",null),ip);
+                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                        // connected to the mobile provider's data plan
+                        ip = getIPAddress(true);
+                        sendUserLogToServer(sessionDashboard.getString("uname",null),ip);
+                    }
+                }
                 Intent iLogout = new Intent(Dashboard.this, MainActivity.class);
                 SharedPreferences.Editor editor = sessionDashboard.edit();
                 editor.clear();
@@ -369,6 +386,32 @@ public class Dashboard extends AppCompatActivity implements
                 finish();
             }
         });
+    }
+
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
     }
 
     private void leads()
@@ -511,8 +554,6 @@ public class Dashboard extends AppCompatActivity implements
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(MeetingDetails.this,response,Toast.LENGTH_LONG).show();
-                        //Log.d("Response From Server", response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             if(jsonObject.getInt("success") == 1)
@@ -537,6 +578,46 @@ public class Dashboard extends AppCompatActivity implements
                 params.put("imeinumber",im);
                 params.put("firebasetoken",fbtoken);
                 params.put("username",un);
+
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void sendUserLogToServer(final String usrnm,final String ipaddr){
+
+        String url = WebName.weburl+"userlogs.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if(jsonObject.getInt("success") == 1)
+                            {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Dashboard.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("username",usrnm);
+                params.put("ipaddr",ipaddr);
 
                 return params;
             }
