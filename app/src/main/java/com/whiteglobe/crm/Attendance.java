@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,7 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Attendance extends AppCompatActivity {
+public class Attendance extends AppCompatActivity implements LocationListener {
 
     TextView txtAttendance;
     AppCompatButton btnAttedannce,btnApplyForLeave;
@@ -65,9 +66,6 @@ public class Attendance extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String currentDate = sdf.format(new Date());
 
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        final String currentDateandTime = sdf1.format(new Date());
-
         txtAttendance.setText("By clicking below button you will make yourself present on " + currentDate);
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -80,10 +78,8 @@ public class Attendance extends AppCompatActivity {
             // for Activity#requestPermissions for more details.
             return;
         }
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        final Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        sessionAttendance = getSharedPreferences("user_details",MODE_PRIVATE);
 
+        sessionAttendance = getSharedPreferences("user_details",MODE_PRIVATE);
         getUserAttendance(sessionAttendance.getString("uname",null));
 
         btnApplyForLeave.setOnClickListener(new View.OnClickListener() {
@@ -97,19 +93,19 @@ public class Attendance extends AppCompatActivity {
         btnAttedannce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if(isGPSEnabled(Attendance.this))
-                {
-                    if (location != null) {
-                        makeAttendance(sessionAttendance.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),currentDateandTime);
-                    }
-                }
-                else
-                {
-                    showCustomDialogError("Please enable GPS to maek your attendance");
-                }
+                getLocation();
             }
         });
+    }
+
+    void getLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
+        }
+        catch(SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     private void makeAttendance(final String username,final String latitude,final String longitude,final String datetime){
@@ -255,5 +251,41 @@ public class Attendance extends AppCompatActivity {
         dialogError.setCanceledOnTouchOutside(false);
         dialogError.show();
         dialogError.getWindow().setAttributes(lp);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if(isGPSEnabled(Attendance.this))
+        {
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String currentDateandTime = sdf1.format(new Date());
+            if (location != null) {
+                Toast.makeText(getApplicationContext(),"Marked",Toast.LENGTH_LONG).show();
+                makeAttendance(sessionAttendance.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),currentDateandTime);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"Not Marked",Toast.LENGTH_LONG).show();
+            }
+        }
+        else
+        {
+            showCustomDialogError("Please enable GPS to maek your attendance");
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 }
