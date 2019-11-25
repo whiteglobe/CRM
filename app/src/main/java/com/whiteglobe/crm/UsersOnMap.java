@@ -106,12 +106,13 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                 LatLng userloc = null;
                                 try {
-                                    int height = 200;
-                                    int width = 200;
+                                    int height = 50;
+                                    int width = 50;
                                     userloc = new LatLng(Double.valueOf(finalJsonObject.getString("latitude")), Double.valueOf(finalJsonObject.getString("longitude")));
                                     mMap.addMarker(new MarkerOptions().position(userloc).title(finalJsonObject.getString("username") + " at " + finalJsonObject.getString("locationtime")).icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(bitmap,width,height,false))));
-                                    float zoomLevel = 7.5f; //This goes up to 21
+                                    float zoomLevel = 17f; //This goes up to 21
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userloc, zoomLevel));
+                                    mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

@@ -83,7 +83,7 @@ public class ProjectDocuments extends AppCompatActivity {
                 request.setVisibleInDownloadsUi(true);
                 request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"  + projectDocumentsGS.getDocName());
                 refid = downloadManager.enqueue(request);
-                Log.e("OUT", "" + refid);
+                //Log.e("OUT", "" + refid);
                 list.add(refid);
             }
 

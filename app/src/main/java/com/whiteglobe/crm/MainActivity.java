@@ -2,17 +2,28 @@ package com.whiteglobe.crm;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 
 
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
@@ -33,8 +44,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

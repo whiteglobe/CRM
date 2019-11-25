@@ -260,12 +260,7 @@ public class Attendance extends AppCompatActivity implements LocationListener {
             SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             final String currentDateandTime = sdf1.format(new Date());
             if (location != null) {
-                Toast.makeText(getApplicationContext(),"Marked",Toast.LENGTH_LONG).show();
                 makeAttendance(sessionAttendance.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),currentDateandTime);
-            }
-            else
-            {
-                Toast.makeText(getApplicationContext(),"Not Marked",Toast.LENGTH_LONG).show();
             }
         }
         else

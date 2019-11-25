@@ -486,6 +486,7 @@ public class Dashboard extends AppCompatActivity implements
         attendance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mService.requestLocationUpdates();
                 Intent iAttendance = new Intent(Dashboard.this,Attendance.class);
                 startActivity(iAttendance);
             }
