@@ -229,14 +229,14 @@
 
             </LinearLayout>
 
-            <!--<androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/checkAppUpdate"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/checkForAppUpdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Check For App Updates"
-                android:theme="@style/Button.Primary" />-->
+                android:theme="@style/Button.Primary" />
 
         </LinearLayout>
 

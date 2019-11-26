@@ -2,12 +2,21 @@ package com.whiteglobe.crm;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -99,37 +108,14 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
                     {
                         jsonObject = jsonArray.getJSONObject(i);
 
-
-                        final JSONObject finalJsonObject = jsonObject;
-                        Picasso.get().load(WebName.imgurl+"user_image/"+jsonObject.getString("userphoto")).into(new Target() {
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                LatLng userloc = null;
-                                try {
-                                    int height = 50;
-                                    int width = 50;
-                                    userloc = new LatLng(Double.valueOf(finalJsonObject.getString("latitude")), Double.valueOf(finalJsonObject.getString("longitude")));
-                                    mMap.addMarker(new MarkerOptions().position(userloc).title(finalJsonObject.getString("username") + " at " + finalJsonObject.getString("locationtime")).icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(bitmap,width,height,false))));
-                                    float zoomLevel = 17f; //This goes up to 21
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userloc, zoomLevel));
-                                    mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-
-                            @Override
-                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                            }
-
-                            @Override
-                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                            }
-                        });
-
+                        View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_map_marker, null);
+                        TextView txtMapUser = marker.findViewById(R.id.txtMapUser);
+                        txtMapUser.setText(jsonObject.getString("username") + " at " + jsonObject.getString("locationtime"));
+                        LatLng userloc = new LatLng(Double.valueOf(jsonObject.getString("latitude")), Double.valueOf(jsonObject.getString("longitude")));
+                        mMap.addMarker(new MarkerOptions().position(userloc).title(jsonObject.getString("username") + " at " + jsonObject.getString("locationtime"))).showInfoWindow();
+                        float zoomLevel = 17f; //This goes up to 21
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userloc, zoomLevel));
+                        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -150,6 +136,22 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
 
         // Adding request to request queue
         requestQueue.add(jsonObjReq);
+    }
+
+    // Convert a view to bitmap
+    public static Bitmap createDrawableFromView(Context context, View view) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        return bitmap;
     }
 
     public Bitmap getBitmapFromURL(String imageUrl) {

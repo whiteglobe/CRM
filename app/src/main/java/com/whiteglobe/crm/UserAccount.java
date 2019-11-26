@@ -2,9 +2,12 @@ package com.whiteglobe.crm;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
 
 import android.app.DownloadManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +17,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -49,7 +53,7 @@ public class UserAccount extends AppCompatActivity {
     private static String TAG = UserAccount.class.getSimpleName();
     TextView txtUAusername,txtUAuserrole,txtUAuserstatus,txtUAdeptname,txtUAbranchname,txtUAemail,txtUAphone,txtUAaddr,txtUAzip;
     CircularImageView userImage;
-    //AppCompatButton checkAppUpdate;
+    AppCompatButton checkAppUpdate;
 
     DownloadManager downloadManager;
     Uri downloadURI;
@@ -74,16 +78,18 @@ public class UserAccount extends AppCompatActivity {
         txtUAaddr = findViewById(R.id.txtUAaddr);
         txtUAzip = findViewById(R.id.txtUAzip);
         userImage = findViewById(R.id.imgUAuserimage);
-        //checkAppUpdate = findViewById(R.id.checkAppUpdate);
+        checkAppUpdate = findViewById(R.id.checkForAppUpdate);
 
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
+        registerReceiver(onComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
         makeJsonObjectRequest(sessionUserAccount.getString("uname",null));
 
-        /*checkAppUpdate.setOnClickListener(new View.OnClickListener() {
+        checkAppUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
+               try {
                     PackageManager pm = getApplicationContext().getPackageManager();
                     PackageInfo pInfo = pm.getPackageInfo("com.whiteglobe.crm", 0);
                     String version = pInfo.versionName;
@@ -93,8 +99,9 @@ public class UserAccount extends AppCompatActivity {
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
+
             }
-        });*/
+        });
     }
 
     private void makeJsonObjectRequest(String u_name) {
@@ -181,27 +188,6 @@ public class UserAccount extends AppCompatActivity {
                                 refid = downloadManager.enqueue(request);
                                 Log.e("OUT", "" + refid);
                                 list.add(refid);
-
-
-
-                                BroadcastReceiver onComplete = new BroadcastReceiver() {
-
-                                    public void onReceive(Context ctxt, Intent intent) {
-                                        long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                                        Log.e("IN", "" + referenceId);
-                                        Intent i = new Intent();
-                                        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/superindia.apk");
-                                        Log.d("storagedir", String.valueOf(storageDir));
-                                        Uri fileURI = FileProvider.getUriForFile(UserAccount.this,BuildConfig.APPLICATION_ID + ".provider",storageDir);
-                                        i.setAction(Intent.ACTION_VIEW);
-                                        i.setDataAndType(fileURI, downloadManager.getMimeTypeForDownloadedFile(downloadManager.enqueue(request)));
-                                        Log.d("Lofting", "About to install new .apk");
-                                        startActivity(i);
-                                    }
-                                };
-
-                                registerReceiver(onComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
                                 //Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
                             }
                             else if(jsonObject.getInt("success") == 0)
@@ -233,6 +219,47 @@ public class UserAccount extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
+
+    BroadcastReceiver onComplete = new BroadcastReceiver() {
+
+        public void onReceive(Context ctxt, Intent intent) {
+            long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            Log.e("IN", "" + referenceId);
+            list.remove(referenceId);
+
+            if (list.isEmpty())
+            {
+                String CHANNEL_ID = "my_channel_01";// The id of the channel.
+                CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+                NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(UserAccount.this,CHANNEL_ID)
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setContentTitle("Super India BuildPro")
+                                .setContentText("File Download Completed.");
+
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(mChannel);
+                notificationManager.notify(455, mBuilder.build());
+            }
+            File toInstall = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "superindia.apk");
+            Intent intent1;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Uri apkUri = FileProvider.getUriForFile(UserAccount.this, "com.whiteglobe.crm.fileprovider", toInstall);
+                intent1 = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                intent1.setData(apkUri);
+                intent1.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                Uri apkUri = Uri.fromFile(toInstall);
+                intent1 = new Intent(Intent.ACTION_VIEW);
+                intent1.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            startActivity(intent1);
+        }
+    };
 
     private void showpDialog() {
         if (!pDialog.isShowing())

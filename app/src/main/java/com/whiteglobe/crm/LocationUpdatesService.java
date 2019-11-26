@@ -164,7 +164,7 @@ public class LocationUpdatesService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Service started");
+        //Log.i(TAG, "Service started");
         boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION,
                 false);
 
@@ -188,7 +188,7 @@ public class LocationUpdatesService extends Service {
         // Called when a client (MainActivity in case of this sample) comes to the foreground
         // and binds with this service. The service should cease to be a foreground service
         // when that happens.
-        Log.i(TAG, "in onBind()");
+        //Log.i(TAG, "in onBind()");
         stopForeground(true);
         mChangingConfiguration = false;
         return mBinder;
@@ -199,7 +199,7 @@ public class LocationUpdatesService extends Service {
         // Called when a client (MainActivity in case of this sample) returns to the foreground
         // and binds once again with this service. The service should cease to be a foreground
         // service when that happens.
-        Log.i(TAG, "in onRebind()");
+        //Log.i(TAG, "in onRebind()");
         stopForeground(true);
         mChangingConfiguration = false;
         super.onRebind(intent);
@@ -207,13 +207,13 @@ public class LocationUpdatesService extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.i(TAG, "Last client unbound from service");
+        //Log.i(TAG, "Last client unbound from service");
 
         // Called when the last client (MainActivity in case of this sample) unbinds from this
         // service. If this method is called due to a configuration change in MainActivity, we
         // do nothing. Otherwise, we make this service a foreground service.
         if (!mChangingConfiguration && Utils.requestingLocationUpdates(this)) {
-            Log.i(TAG, "Starting foreground service");
+            //Log.i(TAG, "Starting foreground service");
 
             startForeground(NOTIFICATION_ID, getNotification());
         }
@@ -230,16 +230,16 @@ public class LocationUpdatesService extends Service {
      * {@link SecurityException}.
      */
     public void requestLocationUpdates() {
-        Log.i(TAG, "Requesting location updates");
+        //Log.i(TAG, "Requesting location updates");
         Utils.setRequestingLocationUpdates(this, true);
         startService(new Intent(getApplicationContext(), LocationUpdatesService.class));
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                     mLocationCallback, Looper.myLooper());
-            Log.d("WG Location","Getting Nava Locations");
+            //Log.d("WG Location","Getting Nava Locations");
         } catch (SecurityException unlikely) {
             Utils.setRequestingLocationUpdates(this, false);
-            Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
+            //Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
         }
     }
 
@@ -248,14 +248,14 @@ public class LocationUpdatesService extends Service {
      * {@link SecurityException}.
      */
     public void removeLocationUpdates() {
-        Log.i(TAG, "Removing location updates");
+        //Log.i(TAG, "Removing location updates");
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             Utils.setRequestingLocationUpdates(this, false);
             stopSelf();
         } catch (SecurityException unlikely) {
             Utils.setRequestingLocationUpdates(this, true);
-            Log.e(TAG, "Lost location permission. Could not remove updates. " + unlikely);
+            //Log.e(TAG, "Lost location permission. Could not remove updates. " + unlikely);
         }
     }
 
@@ -305,17 +305,17 @@ public class LocationUpdatesService extends Service {
                             if (task.isSuccessful() && task.getResult() != null) {
                                 mLocation = task.getResult();
                             } else {
-                                Log.w(TAG, "Failed to get location.");
+                                //Log.w(TAG, "Failed to get location.");
                             }
                         }
                     });
         } catch (SecurityException unlikely) {
-            Log.e(TAG, "Lost location permission." + unlikely);
+            //Log.e(TAG, "Lost location permission." + unlikely);
         }
     }
 
     private void onNewLocation(Location location) {
-        Log.i(TAG, "New location: " + location);
+        //Log.i(TAG, "New location: " + location);
 
         mLocation = location;
         senLocationDataToServer(sessionLocationUpdatesService.getString("uname",null),String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
@@ -376,34 +376,20 @@ public class LocationUpdatesService extends Service {
         RequestQueue requestQueue = Volley.newRequestQueue(LocationUpdatesService.this);
 
         String url = WebName.weburl+"userlocations.php?username="+u_name+"&latitude="+lat+"&longitude="+lng;
-        Log.d("url",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
-                //Log.d(TAG, response.toString());
 
-                try {
-                    // Parsing json object response
-                    // response will be a json object
-                    Log.d("Response",response.getString("success"));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                //VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
                 // hide the progress dialog
             }
         });
