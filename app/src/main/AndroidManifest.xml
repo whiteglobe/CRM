@@ -25,7 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true" >
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -37,12 +37,30 @@
                 android:resource="@xml/provider_paths"/>
         </provider>
 
-        <activity android:name=".LeaveDetails"></activity>
-        <activity android:name=".ViewUserLeaves" />
-        <activity android:name=".ApplyForLeave" />
-        <activity android:name=".SelectUserOnMap" />
-        <activity android:name=".SelectMap" />
-        <activity android:name=".ChangePassword" />
+        <activity
+            android:name=".LeaveDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ViewUserLeaves"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ApplyForLeave"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SelectUserOnMap"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SelectMap"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ChangePassword"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -58,34 +76,103 @@
         <activity
             android:name=".UsersOnMap"
             android:label="@string/title_activity_users_on_map" />
-        <activity android:name=".Attendance" />
-        <activity android:name=".ProjectDocuments" />
-        <activity android:name=".CustomerDetails" />
-        <activity android:name=".Customers" />
-        <activity android:name=".ProductDetails" />
-        <activity android:name=".Products" />
-        <activity android:name=".AddProjectImage" />
-        <activity android:name=".ProjectAllImages" />
-        <activity android:name=".ProjectIssueDetails" />
-        <activity android:name=".AddProjectIssue" />
-        <activity android:name=".ProjectTaskDetails" />
-        <activity android:name=".ProjectAllIssues" />
-        <activity android:name=".ProjectAllTasks" />
-        <activity android:name=".ProjectDetails" />
-        <activity android:name=".Projects" />
-        <activity android:name=".AddNewLead" />
-        <activity android:name=".MeetingDetails" />
-        <activity android:name=".Meetings" />
-        <activity android:name=".LeadDetails" />
-        <activity android:name=".Leads" />
-        <activity android:name=".UpdateUser" />
-        <activity android:name=".UserAccount" />
         <activity
-            android:name=".Dashboard"
+            android:name=".Attendance"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".ProjectDocuments"
+            android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".CustomerDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Customers"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProductDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Products"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddProjectImage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProjectAllImages"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProjectIssueDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddProjectIssue"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProjectTaskDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProjectAllIssues"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProjectAllTasks"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProjectDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Projects"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddNewLead"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MeetingDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Meetings"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LeadDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Leads"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UpdateUser"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UserAccount"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Dashboard"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true"/>
+        <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -93,16 +180,19 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService"
+            android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <service
             android:name=".LocationUpdatesService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location" />
+            android:foregroundServiceType="location"
+            android:stopWithTask="false" />
     </application>
 
 </manifest>

@@ -59,7 +59,6 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_on_map);
 
-        //getAllUserLocation();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -108,11 +107,8 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
                     {
                         jsonObject = jsonArray.getJSONObject(i);
 
-                        View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_map_marker, null);
-                        TextView txtMapUser = marker.findViewById(R.id.txtMapUser);
-                        txtMapUser.setText(jsonObject.getString("username") + " at " + jsonObject.getString("locationtime"));
                         LatLng userloc = new LatLng(Double.valueOf(jsonObject.getString("latitude")), Double.valueOf(jsonObject.getString("longitude")));
-                        mMap.addMarker(new MarkerOptions().position(userloc).title(jsonObject.getString("username") + " at " + jsonObject.getString("locationtime"))).showInfoWindow();
+                        mMap.addMarker(new MarkerOptions().position(userloc).title(jsonObject.getString("username") + " at " + jsonObject.getString("locationtime")));
                         float zoomLevel = 17f; //This goes up to 21
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userloc, zoomLevel));
                         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -136,37 +132,6 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
 
         // Adding request to request queue
         requestQueue.add(jsonObjReq);
-    }
-
-    // Convert a view to bitmap
-    public static Bitmap createDrawableFromView(Context context, View view) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
-        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
-        view.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-
-        return bitmap;
-    }
-
-    public Bitmap getBitmapFromURL(String imageUrl) {
-        try {
-            URL url = new URL(imageUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void showpDialog() {

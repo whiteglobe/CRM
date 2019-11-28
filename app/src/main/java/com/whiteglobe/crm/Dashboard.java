@@ -11,6 +11,7 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -82,9 +83,6 @@ public class Dashboard extends AppCompatActivity implements
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
 
 
-    // Used in checking for runtime permissions.
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
     // The BroadcastReceiver used to listen from broadcasts from the service.
     private MyReceiver myReceiver;
 
@@ -126,24 +124,9 @@ public class Dashboard extends AppCompatActivity implements
 
         myReceiver = new MyReceiver();
 
-        // Check that the user hasn't revoked permissions by going to Settings.
-        if (!checkPermissions()) {
-            requestPermissions();
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
-            return;
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
-            return;
-        }
-
         telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED &&  ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
 
@@ -187,14 +170,10 @@ public class Dashboard extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        if (!checkPermissions()) {
-            requestPermissions();
-        } else {
-            try {
-                mService.requestLocationUpdates();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+        try {
+            mService.requestLocationUpdates();
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         // Bind to the service. If the service is in foreground mode, this signals to the service
@@ -254,59 +233,11 @@ public class Dashboard extends AppCompatActivity implements
                 });
     }
 
-    /**
-     * Returns the current state of the permissions needed.
-     */
-    private boolean checkPermissions() {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
-    private void requestPermissions() {
-        boolean shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
-
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
-        if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.");
-            Snackbar.make(
-                    findViewById(R.id.activity_dashboard),
-                    R.string.permission_rationale,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            ActivityCompat.requestPermissions(Dashboard.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSIONS_REQUEST_CODE);
-                        }
-                    })
-                    .show();
-        } else {
-            Log.i(TAG, "Requesting permission");
-            // Request permission. It's possible this can be auto answered if device policy
-            // sets the permission in a given state or the user denied the permission
-            // previously and checked "Never ask again".
-            ActivityCompat.requestPermissions(Dashboard.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,@NonNull int[] grantResults) {
         Log.i(TAG, "onRequestPermissionResult");
         switch (requestCode) {
-            case 2:
-            case 3:
-            case REQUEST_PERMISSIONS_REQUEST_CODE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission was granted.
-                    //mService.requestLocationUpdates();
-                }
-            case 101:
+            case 1:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     String imeiNumber = telephonyManager.getImei();
                     //Firebase Token
@@ -315,15 +246,12 @@ public class Dashboard extends AppCompatActivity implements
                 } else {
                     Toast.makeText(Dashboard.this,"Without permission we check",Toast.LENGTH_LONG).show();
                 }
-
+                break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
-    /**
-     * Receiver for broadcasts sent by {@link LocationUpdatesService}.
-     */
     private class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
