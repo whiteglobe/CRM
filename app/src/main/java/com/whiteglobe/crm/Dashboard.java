@@ -179,12 +179,6 @@ public class Dashboard extends AppCompatActivity implements
         //To change password
         changepassword();
 
-        for (Intent intent : POWERMANAGER_INTENTS) {
-            if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
-                startActivity(intent);
-                break;
-            }
-        }
     }
 
     @Override
@@ -266,6 +260,12 @@ public class Dashboard extends AppCompatActivity implements
                     //Firebase Token
                     FirebaseMessaging.getInstance().setAutoInitEnabled(true);
                     firebaseToken(imeiNumber);
+                    for (Intent intent : POWERMANAGER_INTENTS) {
+                        if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+                            startActivity(intent);
+                            break;
+                        }
+                    }
                 } else {
                     Toast.makeText(Dashboard.this,"Without permission we check",Toast.LENGTH_LONG).show();
                 }

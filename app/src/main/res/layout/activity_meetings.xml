@@ -6,9 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".Meetings">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMeetings"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMeetings"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

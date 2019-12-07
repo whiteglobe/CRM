@@ -46,10 +46,10 @@ public class ProductDetails extends AppCompatActivity {
         recyclerView.setLayoutManager(recyclerViewlayoutManager);
         allProductDetails = new ArrayList<>();
 
-        getAllProjectIssueDataOfUser(getIntent().getStringExtra("catid"));
+        getAllProductOfCategory(getIntent().getStringExtra("catid"));
     }
 
-    private void getAllProjectIssueDataOfUser(final String catid) {
+    private void getAllProductOfCategory(final String catid) {
 
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Loading...");

@@ -41,6 +41,7 @@ public class SelectUserOnMap extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_user_on_map);
+        getSupportActionBar().hide();
 
         userList = new ArrayList<>();
 
@@ -55,7 +56,7 @@ public class SelectUserOnMap extends AppCompatActivity {
                 int day = selectDate.getDayOfMonth();
                 int month = selectDate.getMonth() + 1;
                 int year = selectDate.getYear();
-                String dateOfUser = year + "-" + month + "-" + day;
+                String dateOfUser = year + "-" + month + "-" + String.format("%02d",day);
 
                 String url = WebName.weburl + "getuseronmap.php?username="+userForMap+"&seldate="+dateOfUser;
                 Intent iUserOnMap = new Intent(SelectUserOnMap.this,UsersOnMap.class);

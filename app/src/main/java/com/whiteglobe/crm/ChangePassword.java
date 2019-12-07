@@ -34,7 +34,7 @@ public class ChangePassword extends AppCompatActivity {
 
     SharedPreferences sessionChangePassword;
     private ProgressDialog pDialog;
-    private static String TAG = Attendance.class.getSimpleName();
+    private static String TAG = ChangePassword.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

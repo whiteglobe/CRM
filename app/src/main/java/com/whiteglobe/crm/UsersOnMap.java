@@ -88,6 +88,7 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
         RequestQueue requestQueue = Volley.newRequestQueue(UsersOnMap.this);
 
         String url = getIntent().getStringExtra("url");
+        //Log.d("URL",url);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
@@ -98,7 +99,7 @@ public class UsersOnMap extends FragmentActivity implements OnMapReadyCallback {
                 try {
                     // Parsing json object response
                     // response will be a json object
-                    Log.d("Response",response.toString());
+                    //Log.d("Response",response.toString());
                     JSONArray jsonArray = response.getJSONArray("users");
 
                     JSONObject jsonObject;
