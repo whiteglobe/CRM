@@ -74,7 +74,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs;
     TextView txtUserMapLocations;
     SharedPreferences sessionDashboard;
     private static final String TAG = "Dashboard";
@@ -178,6 +178,9 @@ public class Dashboard extends AppCompatActivity implements
 
         //To change password
         changepassword();
+
+        //To view company documents
+        companydocs();
 
     }
 
@@ -473,6 +476,19 @@ public class Dashboard extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 Intent iChangePassword = new Intent(Dashboard.this,ChangePassword.class);
+                startActivity(iChangePassword);
+            }
+        });
+    }
+
+    private void companydocs()
+    {
+        companydocs = findViewById(R.id.companydocs);
+
+        companydocs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iChangePassword = new Intent(Dashboard.this,CompanyDocuments.class);
                 startActivity(iChangePassword);
             }
         });
