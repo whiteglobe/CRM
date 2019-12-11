@@ -26,7 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ViewCompanyDocument"></activity>
+        <activity android:name=".Chat"></activity>
+        <activity android:name=".ChatUsers" />
+        <activity android:name=".ViewCompanyDocument" />
         <activity android:name=".CompanyDocuments" />
 
         <provider

@@ -1,6 +1,8 @@
 package com.whiteglobe.crm;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -23,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.os.Handler;
@@ -45,6 +48,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.firebase.client.Firebase;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
@@ -61,6 +65,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,7 +79,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs,chat;
     TextView txtUserMapLocations;
     SharedPreferences sessionDashboard;
     private static final String TAG = "Dashboard";
@@ -148,6 +153,10 @@ public class Dashboard extends AppCompatActivity implements
 
         switchOnGPS();
 
+        if(sessionDashboard.getString("uname",null).equals("superindia") || sessionDashboard.getString("uname",null).equals("allarakhavohra"))
+        {
+            getAllCompanyDocumentNotifications();
+        }
 
         //To go in User Account Activity
         userAccount();
@@ -182,6 +191,8 @@ public class Dashboard extends AppCompatActivity implements
         //To view company documents
         companydocs();
 
+        //To chat with other users
+        chat();
     }
 
     @Override
@@ -494,6 +505,65 @@ public class Dashboard extends AppCompatActivity implements
         });
     }
 
+    private void chat()
+    {
+        chat = findViewById(R.id.chat);
+
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String url = "https://superindiabuildpro-8b6bd.firebaseio.com/users.json";
+                final ProgressDialog pd = new ProgressDialog(Dashboard.this);
+                pd.setMessage("Loading...");
+                pd.show();
+
+                final String user = sessionDashboard.getString("uname",null);
+                final String pass = "Whiteglobe@123";
+
+                StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String s) {
+                        if(s.equals("null")){
+                            Toast.makeText(Dashboard.this, "user not found to chat", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            try {
+                                JSONObject obj = new JSONObject(s);
+
+                                if(!obj.has(user)){
+                                    Toast.makeText(Dashboard.this, "user not found", Toast.LENGTH_LONG).show();
+                                }
+                                else if(obj.getJSONObject(user).getString("password").equals(pass)){
+                                    UserDetails.username = user;
+                                    UserDetails.password = pass;
+                                    Intent iChangePassword = new Intent(Dashboard.this,ChatUsers.class);
+                                    startActivity(iChangePassword);
+                                }
+                                else {
+                                    Toast.makeText(Dashboard.this, "incorrect password", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        pd.dismiss();
+                    }
+                },new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        System.out.println("" + volleyError);
+                        pd.dismiss();
+                    }
+                });
+
+                RequestQueue rQueue = Volley.newRequestQueue(Dashboard.this);
+                rQueue.add(request);
+            }
+        });
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -637,5 +707,68 @@ public class Dashboard extends AppCompatActivity implements
         });
         //Give permission to access GPS
         //ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 11);
+    }
+
+    private void generateNotification(String msg){
+        String CHANNEL_ID = "my_channel_01";// The id of the channel.
+        CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(Dashboard.this,CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Super India BuildPro")
+                        .setContentText(msg);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(mChannel);
+        notificationManager.notify(455, mBuilder.build());
+    }
+
+    private void getAllCompanyDocumentNotifications() {
+
+        RequestQueue requestQueue = Volley.newRequestQueue(Dashboard.this);
+
+        String url = WebName.weburl+"getdocumentnotifications.php";
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url , null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    // Parsing json object response
+                    // response will be a json object
+                    if(response.getInt("success") == 1)
+                    {
+                        JSONArray jsonArray = response.getJSONArray("docsnoti");
+
+                        JSONObject jsonObject;
+
+                        for (int i = 0; i < jsonArray.length(); i++)
+                        {
+                            jsonObject = jsonArray.getJSONObject(i);
+                            generateNotification(jsonObject.getString("notifics"));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),error.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        // Adding request to request queue
+        requestQueue.add(jsonObjReq);
     }
 }
