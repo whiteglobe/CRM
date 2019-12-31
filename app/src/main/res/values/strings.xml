@@ -19,4 +19,8 @@
 
     <string name="location_updated">Location Updated: %1$s</string>
     <string name="title_activity_users_on_map">Map</string>
+
+    <string name="search_hint">Type Party Name or Quotation Number</string>
+    <string name="action_search">Search</string>
+    <string name="Rs">\u20B9</string>
 </resources>

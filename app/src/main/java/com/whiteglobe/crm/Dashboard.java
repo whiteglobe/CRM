@@ -79,7 +79,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs,chat;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs,chat,quotations;
     TextView txtUserMapLocations;
     SharedPreferences sessionDashboard;
     private static final String TAG = "Dashboard";
@@ -193,6 +193,9 @@ public class Dashboard extends AppCompatActivity implements
 
         //To chat with other users
         chat();
+
+        //To view all quotations
+        quotations();
     }
 
     @Override
@@ -500,6 +503,19 @@ public class Dashboard extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 Intent iChangePassword = new Intent(Dashboard.this,CompanyDocuments.class);
+                startActivity(iChangePassword);
+            }
+        });
+    }
+
+    private void quotations()
+    {
+        quotations = findViewById(R.id.quotations);
+
+        quotations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iChangePassword = new Intent(Dashboard.this,Quotations.class);
                 startActivity(iChangePassword);
             }
         });
