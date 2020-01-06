@@ -44,7 +44,7 @@ import java.util.Map;
 public class Attendance extends AppCompatActivity implements LocationListener {
 
     TextView txtAttendance;
-    AppCompatButton btnAttedannce,btnApplyForLeave;
+    AppCompatButton btnAttedannce,btnApplyForLeave,btnLeaveAttandance;
 
     SharedPreferences sessionAttendance;
     private ProgressDialog pDialog;
@@ -62,11 +62,13 @@ public class Attendance extends AppCompatActivity implements LocationListener {
         txtAttendance = findViewById(R.id.txtAttendance);
         btnAttedannce = findViewById(R.id.btnAttedannce);
         btnApplyForLeave = findViewById(R.id.btnApplyForLeave);
+        btnLeaveAttandance = findViewById(R.id.btnLeaveAttandance);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String currentDate = sdf.format(new Date());
 
         txtAttendance.setText("By clicking below button you will make yourself present on " + currentDate);
+        btnLeaveAttandance.setEnabled(false);
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -94,6 +96,15 @@ public class Attendance extends AppCompatActivity implements LocationListener {
             @Override
             public void onClick(View view) {
                 getLocation();
+            }
+        });
+
+        btnLeaveAttandance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                final String currentDateandTime2 = sdf2.format(new Date());
+                makeLeaveAttendance(sessionAttendance.getString("uname",null),currentDateandTime2);
             }
         });
     }
@@ -129,6 +140,7 @@ public class Attendance extends AppCompatActivity implements LocationListener {
                                 Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
                                 btnAttedannce.setBackgroundColor(getResources().getColor(R.color.green_900));
                                 btnAttedannce.setEnabled(false);
+                                btnLeaveAttandance.setEnabled(true);
                             }
                             else if(jsonObject.getInt("success") == 0)
                             {
@@ -152,6 +164,59 @@ public class Attendance extends AppCompatActivity implements LocationListener {
                 params.put("username",username);
                 params.put("latitude",latitude);
                 params.put("longitude",longitude);
+                params.put("datetime",datetime);
+
+                return params;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void makeLeaveAttendance(final String username,final String datetime){
+
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Marking Your Attendance...");
+        pDialog.show();
+
+        showpDialog();
+
+        String url = WebName.weburl+"makeleaveattendance.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            if(jsonObject.getInt("success") == 1)
+                            {
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
+                                btnLeaveAttandance.setBackgroundColor(getResources().getColor(R.color.green_900));
+                                btnLeaveAttandance.setEnabled(false);
+                            }
+                            else if(jsonObject.getInt("success") == 0)
+                            {
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("msg"),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        hidepDialog();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Attendance.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("username",username);
                 params.put("datetime",datetime);
 
                 return params;
@@ -202,6 +267,7 @@ public class Attendance extends AppCompatActivity implements LocationListener {
                     {
                         btnAttedannce.setBackgroundColor(getResources().getColor(R.color.green_900));
                         btnAttedannce.setEnabled(false);
+                        btnLeaveAttandance.setEnabled(true);
                     }
                     else if(response.getInt("success") == 0)
                     {

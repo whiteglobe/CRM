@@ -236,7 +236,6 @@ public class MainActivity extends AppCompatActivity {
                                 SharedPreferences.Editor editor = sessionData.edit();
                                 editor.putString("username",uname);
                                 editor.putString("uname",txtUsername.getText().toString());
-                                editor.putString("email",jsonObject.getString("email"));
                                 editor.commit();
                                 iLogin = new Intent(MainActivity.this, Dashboard.class);
                                 startActivity(iLogin);

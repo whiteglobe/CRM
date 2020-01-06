@@ -32,6 +32,14 @@
             android:theme="@style/Button.Primary" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLeaveAttandance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Mark Your Leave Of Day"
+            android:theme="@style/Button.Primary" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnApplyForLeave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
