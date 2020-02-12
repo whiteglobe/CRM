@@ -1,6 +1,8 @@
 package com.whiteglobe.crm;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +38,19 @@ public class LeadsAdapter extends RecyclerView.Adapter<LeadsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        LeadGS getLeadsData =  leadsdata.get(position);
+        final LeadGS getLeadsData =  leadsdata.get(position);
 
         holder.leadName.setText(getLeadsData.getName());
         holder.leadTitle.setText(getLeadsData.getTitle());
         holder.leadPhone.setText(getLeadsData.getPhoneno());
+        /*holder.leadPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:"+getLeadsData.getPhoneno()));
+                context.startActivity(intent);
+            }
+        });*/
         holder.leadID = getLeadsData.getLeadID();
     }
 

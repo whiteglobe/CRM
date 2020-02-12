@@ -44,6 +44,7 @@ public class Quotations extends AppCompatActivity {
     List<QuotationGS> allQuotations;
 
     private SearchView searchView;
+    //nameserver 89.207.131.8
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

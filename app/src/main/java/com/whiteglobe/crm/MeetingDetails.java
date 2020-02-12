@@ -5,6 +5,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +36,7 @@ public class MeetingDetails extends AppCompatActivity {
 
     TextView txtMeetingLeadTitle,txtMeetingLeadDate,txtMeetingLeadTime;
     AppCompatEditText txtMeetingLeadDiscussion;
-    AppCompatButton btnUpdateMeetDetails;
+    AppCompatButton btnUpdateMeetDetails,btnAddReminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class MeetingDetails extends AppCompatActivity {
         txtMeetingLeadTime = findViewById(R.id.txtMeetingLeadTime);
         txtMeetingLeadDiscussion = findViewById(R.id.txtMeetingLeadDiscussion);
         btnUpdateMeetDetails = findViewById(R.id.btnUpdateMeetDetails);
+        btnAddReminder = findViewById(R.id.btnAddReminder);
 
         getMeetingDetails(sessionUserAccount.getString("uname",null),getIntent().getStringExtra("meeting_id"));
 
@@ -58,6 +60,15 @@ public class MeetingDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 updateMeetingDetails(getIntent().getStringExtra("meeting_id"));
+            }
+        });
+
+        btnAddReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iAddReminder = new Intent(MeetingDetails.this,AddReminder.class);
+                iAddReminder.putExtra("meetpartyname",txtMeetingLeadTitle.getText());
+                startActivity(iAddReminder);
             }
         });
     }
