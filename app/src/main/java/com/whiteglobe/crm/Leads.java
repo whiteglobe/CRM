@@ -1,15 +1,20 @@
 package com.whiteglobe.crm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -36,7 +41,7 @@ public class Leads extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
-    RecyclerView.Adapter recyclerViewadapter;
+    LeadsAdapter leadsAdapter;
     List<LeadGS> allLeads;
 
     SharedPreferences sessionUserAccount;
@@ -45,11 +50,20 @@ public class Leads extends AppCompatActivity {
 
     FloatingActionButton btnAddNewLead;
 
+    private SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leads);
-        getSupportActionBar().hide();
+
+        Toolbar toolbar = findViewById(R.id.toolbarLeads);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Leads");
+
+        // toolbar fancy stuff
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         recyclerView = findViewById(R.id.recyclerViewLeads);
         recyclerView.setHasFixedSize(true);
@@ -86,6 +100,35 @@ public class Leads extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_leads, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search_leads).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                leadsAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                leadsAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private void getAllLeadsDataOfUser(String u_name) {
 
         pDialog = new ProgressDialog(this);
@@ -118,8 +161,9 @@ public class Leads extends AppCompatActivity {
                             jsonObject = jsonArray.getJSONObject(i);
                             allLeads.add(new LeadGS(jsonObject.getInt("RL_Id"),jsonObject.getString("RL_Title"),jsonObject.getString("RL_Company_Name"),jsonObject.getString("RL_Phone")));
                         }
-                        recyclerViewadapter = new LeadsAdapter(allLeads, getApplicationContext());
-                        recyclerView.setAdapter(recyclerViewadapter);
+                        leadsAdapter = new LeadsAdapter(allLeads, getApplicationContext());
+                        recyclerView.setAdapter(leadsAdapter);
+                        leadsAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

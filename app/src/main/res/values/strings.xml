@@ -21,6 +21,9 @@
     <string name="title_activity_users_on_map">Map</string>
 
     <string name="search_hint">Type Party Name or Quotation Number</string>
+    <string name="search_hint_customer">Type Customer Name or Mobile Number</string>
+    <string name="search_hint_marketing">Type Name or Mobile Number</string>
+    <string name="search_hint_leads">Type Name or Mobile Number</string>
     <string name="action_search">Search</string>
     <string name="Rs">\u20B9</string>
 </resources>

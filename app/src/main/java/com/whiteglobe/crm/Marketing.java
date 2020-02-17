@@ -1,13 +1,19 @@
 package com.whiteglobe.crm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,7 +36,7 @@ public class Marketing extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
-    RecyclerView.Adapter recyclerViewadapter;
+    MarketingAdapter marketingAdapter;
 
     SharedPreferences sessionMarketing;
     private ProgressDialog pDialog;
@@ -38,11 +44,20 @@ public class Marketing extends AppCompatActivity {
 
     List<MarketingGS> allmarketings;
 
+    private SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marketing);
-        getSupportActionBar().hide();
+
+        Toolbar toolbar = findViewById(R.id.toolbarMarketing);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Marketing");
+
+        // toolbar fancy stuff
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         recyclerView = findViewById(R.id.recyclerViewMarketing);
         recyclerView.setHasFixedSize(true);
@@ -68,6 +83,36 @@ public class Marketing extends AppCompatActivity {
 
             }
         }));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_marketing, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search_marketing).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                marketingAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                marketingAdapter.getFilter().filter(query);
+                Log.d("Change",query);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void getAllMarketingsDataOfUser(String u_name) {
@@ -102,8 +147,9 @@ public class Marketing extends AppCompatActivity {
                             jsonObject = jsonArray.getJSONObject(i);
                             allmarketings.add(new MarketingGS(jsonObject.getInt("ML_Id"),jsonObject.getString("ML_Name"),jsonObject.getString("ML_Phone"),jsonObject.getString("ML_Address")));
                         }
-                        recyclerViewadapter = new MarketingAdapter(allmarketings, getApplicationContext());
-                        recyclerView.setAdapter(recyclerViewadapter);
+                        marketingAdapter = new MarketingAdapter(allmarketings, getApplicationContext());
+                        recyclerView.setAdapter(marketingAdapter);
+                        marketingAdapter.notifyDataSetChanged();
                     }
                     else if(response.getInt("success") == 0)
                     {

@@ -29,9 +29,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MarketingDetails"></activity>
-        <activity android:name=".Marketing" />
-        <activity android:name=".AddReminder" />
+
+        <activity android:name=".MarketingDetails"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".Marketing"
+            android:configChanges="orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/marketingsearch" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+        </activity>
+
+        <activity android:name=".AddReminder"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".QuotationDetails"
             android:screenOrientation="landscape" />
@@ -131,7 +152,19 @@
         <activity
             android:name=".Customers"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/customersearch" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".ProductDetails"
             android:configChanges="orientation"
@@ -192,10 +225,24 @@
             android:name=".LeadDetails"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".Leads"
+            android:label="@string/app_name"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/leadsearch" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name=".UpdateUser"
             android:configChanges="orientation"
