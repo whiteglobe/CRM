@@ -79,7 +79,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs,chat,quotations;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs,chat,quotations,marketing;
     TextView txtUserMapLocations;
     SharedPreferences sessionDashboard;
     private static final String TAG = "Dashboard";
@@ -147,7 +147,7 @@ public class Dashboard extends AppCompatActivity implements
 
         telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED &&  ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALENDAR,Manifest.permission.WRITE_CALENDAR}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALENDAR,Manifest.permission.WRITE_CALENDAR,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
 
@@ -196,6 +196,9 @@ public class Dashboard extends AppCompatActivity implements
 
         //To view all quotations
         quotations();
+
+        //To view all marketing leads
+        marketing();
     }
 
     @Override
@@ -515,8 +518,21 @@ public class Dashboard extends AppCompatActivity implements
         quotations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent iChangePassword = new Intent(Dashboard.this,Quotations.class);
-                startActivity(iChangePassword);
+                Intent iQuotation = new Intent(Dashboard.this,Quotations.class);
+                startActivity(iQuotation);
+            }
+        });
+    }
+
+    private void marketing()
+    {
+        marketing = findViewById(R.id.marketing);
+
+        marketing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iMarketing = new Intent(Dashboard.this,Marketing.class);
+                startActivity(iMarketing);
             }
         });
     }

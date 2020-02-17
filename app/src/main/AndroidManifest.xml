@@ -29,7 +29,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddReminder"></activity>
+        <activity android:name=".MarketingDetails"></activity>
+        <activity android:name=".Marketing" />
+        <activity android:name=".AddReminder" />
         <activity
             android:name=".QuotationDetails"
             android:screenOrientation="landscape" />

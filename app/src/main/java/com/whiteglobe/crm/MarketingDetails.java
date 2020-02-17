@@ -8,7 +8,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,52 +27,53 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MeetingDetails extends AppCompatActivity {
+public class MarketingDetails extends AppCompatActivity {
 
-    SharedPreferences sessionMeetingDetails;
+    SharedPreferences sessionMarketingDetails;
     private ProgressDialog pDialog;
-    private static String TAG = MeetingDetails.class.getSimpleName();
+    private static String TAG = MarketingDetails.class.getSimpleName();
 
-    TextView txtMeetingLeadTitle,txtMeetingLeadDate,txtMeetingLeadTime;
-    AppCompatEditText txtMeetingLeadDiscussion;
-    AppCompatButton btnUpdateMeetDetails,btnAddReminder;
+    TextView txtMarketingLeadName,txtMarketingLeadPhone,txtMarketingLeadEmail,txtMarketingLeadAddress,txtMarketingLeadIndustry;
+    AppCompatEditText txtMarketingLeadDiscussion;
+    AppCompatButton btnUpdateMarketDetails,btnAddMarketingReminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_meeting_details);
-
+        setContentView(R.layout.activity_marketing_details);
         getSupportActionBar().hide();
 
-        sessionMeetingDetails = getSharedPreferences("user_details",MODE_PRIVATE);
+        sessionMarketingDetails = getSharedPreferences("user_details",MODE_PRIVATE);
 
-        txtMeetingLeadTitle = findViewById(R.id.txtMeetingLeadTitle);
-        txtMeetingLeadDate = findViewById(R.id.txtMeetingLeadDate);
-        txtMeetingLeadTime = findViewById(R.id.txtMeetingLeadTime);
-        txtMeetingLeadDiscussion = findViewById(R.id.txtMeetingLeadDiscussion);
-        btnUpdateMeetDetails = findViewById(R.id.btnUpdateMeetDetails);
-        btnAddReminder = findViewById(R.id.btnAddReminder);
+        txtMarketingLeadName = findViewById(R.id.txtMarketingLeadName);
+        txtMarketingLeadPhone = findViewById(R.id.txtMarketingLeadPhone);
+        txtMarketingLeadEmail = findViewById(R.id.txtMarketingLeadEmail);
+        txtMarketingLeadAddress = findViewById(R.id.txtMarketingLeadAddress);
+        txtMarketingLeadIndustry = findViewById(R.id.txtMarketingLeadIndustry);
+        txtMarketingLeadDiscussion = findViewById(R.id.txtMarketingLeadDiscussion);
+        btnUpdateMarketDetails = findViewById(R.id.btnUpdateMarketDetails);
+        btnAddMarketingReminder = findViewById(R.id.btnAddMarketingReminder);
 
-        getMeetingDetails(sessionMeetingDetails.getString("uname",null),getIntent().getStringExtra("meeting_id"));
+        getMarketingDetails(sessionMarketingDetails.getString("uname",null),getIntent().getStringExtra("marketing_id"));
 
-        btnUpdateMeetDetails.setOnClickListener(new View.OnClickListener() {
+        btnUpdateMarketDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateMeetingDetails(getIntent().getStringExtra("meeting_id"));
+                updateMarketingDetails(getIntent().getStringExtra("marketing_id"));
             }
         });
 
-        btnAddReminder.setOnClickListener(new View.OnClickListener() {
+        btnAddMarketingReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent iAddReminder = new Intent(MeetingDetails.this,AddReminder.class);
-                iAddReminder.putExtra("meetpartyname",txtMeetingLeadTitle.getText());
+                Intent iAddReminder = new Intent(MarketingDetails.this,AddReminder.class);
+                iAddReminder.putExtra("meetpartyname",txtMarketingLeadName.getText());
                 startActivity(iAddReminder);
             }
         });
     }
 
-    private void getMeetingDetails(String u_name,String leadid) {
+    private void getMarketingDetails(String u_name,String marketleadid) {
 
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Loading...");
@@ -81,9 +81,9 @@ public class MeetingDetails extends AppCompatActivity {
 
         showpDialog();
 
-        RequestQueue requestQueue = Volley.newRequestQueue(MeetingDetails.this);
+        RequestQueue requestQueue = Volley.newRequestQueue(MarketingDetails.this);
 
-        String url = WebName.weburl+"meetingdetails.php?username="+u_name+"&meeting_id="+leadid;
+        String url = WebName.weburl+"marketingdetails.php?username="+u_name+"&marketing_id="+marketleadid;
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 url , null, new Response.Listener<JSONObject>() {
@@ -92,10 +92,12 @@ public class MeetingDetails extends AppCompatActivity {
             public void onResponse(JSONObject response) {
 
                 try {
-                    txtMeetingLeadTitle.setText(response.getString("MeetingForLead"));
-                    txtMeetingLeadDate.setText(response.getString("MeetingDate"));
-                    txtMeetingLeadTime.setText(response.getString("MeetingTime"));
-                    txtMeetingLeadDiscussion.setText(response.getString("MeetingDiscussion"));
+                    txtMarketingLeadName.setText(response.getString("ML_Name"));
+                    txtMarketingLeadPhone.setText(response.getString("ML_Phone"));
+                    txtMarketingLeadEmail.setText(response.getString("ML_Email"));
+                    txtMarketingLeadAddress.setText(response.getString("ML_Address"));
+                    txtMarketingLeadIndustry.setText(response.getString("ML_Industry"));
+                    txtMarketingLeadDiscussion.setText(response.getString("ML_Description"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
@@ -127,9 +129,15 @@ public class MeetingDetails extends AppCompatActivity {
             pDialog.dismiss();
     }
 
-    private void updateMeetingDetails(final String meetingID){
+    private void updateMarketingDetails(final String meetingID){
 
-        String url = WebName.weburl+"updatemeetingdetails.php";
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Updating Details...");
+        pDialog.show();
+
+        showpDialog();
+
+        String url = WebName.weburl+"updatemarketingdetails.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -148,19 +156,20 @@ public class MeetingDetails extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        hidepDialog();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MeetingDetails.this,error.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(MarketingDetails.this,error.toString(),Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                params.put("meeting_id",meetingID);
-                params.put("meeting_details",txtMeetingLeadDiscussion.getText().toString().trim());
+                params.put("marketing_id",meetingID);
+                params.put("discussion",txtMarketingLeadDiscussion.getText().toString().trim());
 
                 return params;
             }
@@ -169,5 +178,4 @@ public class MeetingDetails extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-
 }

@@ -70,17 +70,6 @@ public class Attendance extends AppCompatActivity implements LocationListener {
         txtAttendance.setText("By clicking below button you will make yourself present on " + currentDate);
         btnLeaveAttandance.setEnabled(false);
 
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            return;
-        }
-
         sessionAttendance = getSharedPreferences("user_details",MODE_PRIVATE);
         getUserAttendance(sessionAttendance.getString("uname",null));
 
@@ -107,6 +96,17 @@ public class Attendance extends AppCompatActivity implements LocationListener {
                 makeLeaveAttendance(sessionAttendance.getString("uname",null),currentDateandTime2);
             }
         });
+
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
     }
 
     void getLocation() {
