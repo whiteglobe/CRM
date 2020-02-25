@@ -48,13 +48,15 @@
                         android:id="@+id/imgExhibitionDetailsImage1"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:scaleType="fitCenter" />
+                        android:scaleType="fitCenter"
+                        android:paddingBottom="@dimen/spacing_medium" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgExhibitionDetailsImage2"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:scaleType="fitCenter" />
+                        android:scaleType="fitCenter"
+                        android:paddingBottom="@dimen/spacing_medium" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

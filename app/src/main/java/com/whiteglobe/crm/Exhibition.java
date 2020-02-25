@@ -131,6 +131,8 @@ public class Exhibition extends AppCompatActivity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
+        allexhibition.clear();
+
         showpDialog();
 
         RequestQueue requestQueue = Volley.newRequestQueue(Exhibition.this);
@@ -194,5 +196,11 @@ public class Exhibition extends AppCompatActivity {
     private void hidepDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getAllExhibitionData();
     }
 }

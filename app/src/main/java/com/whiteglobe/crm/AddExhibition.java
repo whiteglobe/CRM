@@ -5,6 +5,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -31,6 +32,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddExhibition extends AppCompatActivity {
+
+    private ProgressDialog pDialog;
+    private static String TAG = AddExhibition.class.getSimpleName();
 
     AppCompatButton btnChooseExhibitionImage1,btnAddExhibitionDetails;
     AppCompatImageView imageViewExhibitionImageFront,imageViewExhibitionImageBack;
@@ -133,12 +137,19 @@ public class AddExhibition extends AppCompatActivity {
 
     private void uploadExhibitionData(final Bitmap bitmap1, final Bitmap bitmap2, final String username, final String partyName, final String phNo, final String remarks) {
 
-         String url = WebName.weburl+"addexhibition.php";
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        showpDialog();
+
+        String url = WebName.weburl+"addexhibition.php";
         //our custom volley request
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
+                        Log.d("Response", new String(response.data));
                         try {
                             JSONObject obj = new JSONObject(new String(response.data));
                             if(obj.getInt("success") == 1)
@@ -153,6 +164,7 @@ public class AddExhibition extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        hidepDialog();
                     }
                 },
                 new Response.ErrorListener() {
@@ -194,5 +206,15 @@ public class AddExhibition extends AppCompatActivity {
 
         //adding the request to volley
         Volley.newRequestQueue(this).add(volleyMultipartRequest);
+    }
+
+    private void showpDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hidepDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 }

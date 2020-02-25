@@ -5,10 +5,13 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +51,20 @@ public class ExhibitionDetails extends AppCompatActivity {
         btnSendWhatsappMsgToParty = findViewById(R.id.btnSendWhatsappMsgToParty);
 
         getExhibitionDetails(getIntent().getStringExtra("exhb_id"));
+
+        final String phno = "+91"+txtExhibitionPartyPhone.getText().toString();
+
+        btnSendWhatsappMsgToParty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=+91" + phno + "&text=" + "Hello");
+
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+
+                startActivity(sendIntent);
+            }
+        });
     }
 
     private void getExhibitionDetails(String exhbid) {
@@ -74,15 +91,6 @@ public class ExhibitionDetails extends AppCompatActivity {
                     txtExhibitionPartyName.setText(response.getString("Exhb_PartyName"));
                     txtExhibitionPartyPhone.setText(response.getString("Exhb_PhoneNo"));
                     txtExhibitionPartyRemarks.setText(response.getString("Exhb_Remarks"));
-
-                    final String phno = response.getString("Exhb_PhoneNo");
-
-                    btnSendWhatsappMsgToParty.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openWhatsAppConversationUsingUri(getApplicationContext(),"+91"+phno,"Hello");
-                        }
-                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Error: " + e.getMessage(),Toast.LENGTH_LONG).show();
@@ -112,14 +120,5 @@ public class ExhibitionDetails extends AppCompatActivity {
     private void hidepDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
-    }
-
-    public static void openWhatsAppConversationUsingUri(Context context, String numberWithCountryCode, String message) {
-
-        Uri uri = Uri.parse("https://api.whatsapp.com/send?phone=" + numberWithCountryCode + "&text=" + message);
-
-        Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
-
-        context.startActivity(sendIntent);
     }
 }
