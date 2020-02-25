@@ -79,7 +79,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs,chat,quotations,marketing;
+    FloatingActionButton userAccount,logout,leads,meetings,projects,products,customers,attendance,tasks,changepassword,companydocs,chat,quotations,marketing,exhibition;
     TextView txtUserMapLocations;
     SharedPreferences sessionDashboard;
     private static final String TAG = "Dashboard";
@@ -199,6 +199,9 @@ public class Dashboard extends AppCompatActivity implements
 
         //To view all marketing leads
         marketing();
+
+        //To enter enquiry details in exhibition
+        exhibition();
     }
 
     @Override
@@ -533,6 +536,19 @@ public class Dashboard extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent iMarketing = new Intent(Dashboard.this,Marketing.class);
                 startActivity(iMarketing);
+            }
+        });
+    }
+
+    private void exhibition()
+    {
+        exhibition = findViewById(R.id.exhibition);
+
+        exhibition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iExhibition = new Intent(Dashboard.this,Exhibition.class);
+                startActivity(iExhibition);
             }
         });
     }

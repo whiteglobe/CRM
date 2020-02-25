@@ -40,7 +40,7 @@ public class AddNewLead extends AppCompatActivity {
     String[] leadSourceArray = new String[]{"Cold Call","Existing Customer","Self Generated","Employee","Partner","Public Relations","Direct Mail","Conference","Trade Show","Web Site","Word of mouth","Email","Campaign","Other"};
     ArrayList<String> countryName,stateName,cityName;
 
-    SharedPreferences sessionUserAccount;
+    SharedPreferences sessionAddNewLead;
     private ProgressDialog pDialog;
     private static String TAG = AddNewLead.class.getSimpleName();
 
@@ -79,7 +79,7 @@ public class AddNewLead extends AppCompatActivity {
         stateName = new ArrayList<>();
         cityName = new ArrayList<>();
 
-        sessionUserAccount = getSharedPreferences("user_details",MODE_PRIVATE);
+        sessionAddNewLead = getSharedPreferences("user_details",MODE_PRIVATE);
 
         getCountries();
         anlCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -128,7 +128,7 @@ public class AddNewLead extends AppCompatActivity {
                 else
                 {
                     //Toast.makeText(getApplicationContext(),"All is well!!!",Toast.LENGTH_LONG).show();
-                    adNewLead(sessionUserAccount.getString("uname",null));
+                    adNewLead(sessionAddNewLead.getString("uname",null));
                 }
 
             }
